@@ -1,4 +1,5 @@
-import { Heart, Phone, MapPin, Mail, Facebook, Instagram, Youtube, Linkedin } from "lucide-react";
+import { Heart, Phone, MapPin, Mail, Facebook, Instagram, Youtube, Linkedin, Lock } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SiteFooter = () => {
   return (
@@ -102,8 +103,11 @@ const SiteFooter = () => {
               <a href="#" className="hover:text-navy underline">Demonstrações Contábeis</a> ·{" "}
               <a href="#" className="hover:text-navy underline">CEBAS</a>
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-xs text-muted-foreground flex items-center gap-3">
               © 2026 Santa Casa de Misericórdia. Todos os direitos reservados.
+              <Link to="/admin" className="inline-flex items-center gap-1 text-muted-foreground/50 hover:text-navy transition-colors" title="Área Administrativa">
+                <Lock className="w-3 h-3" />
+              </Link>
             </div>
           </div>
         </div>

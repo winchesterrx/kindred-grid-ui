@@ -50,25 +50,6 @@ const ServicesSection = () => {
           ))}
         </div>
 
-        {/* Ouvidoria Card */}
-        <div
-          id="ouvidoria"
-          className="bg-muted rounded-2xl border border-border/60 p-8 md:p-10 flex flex-col md:flex-row items-center gap-6"
-        >
-          <div className="w-16 h-16 rounded-2xl bg-navy flex items-center justify-center shrink-0">
-            <MessageCircle className="w-8 h-8 text-primary-foreground" />
-          </div>
-          <div className="flex-1 text-center md:text-left">
-            <h3 className="text-xl font-bold text-navy mb-2">Ouvidoria</h3>
-            <p className="text-muted-foreground max-w-lg">
-              Sua opinião é fundamental. Registre elogios, sugestões, reclamações ou denúncias com total sigilo.
-            </p>
-          </div>
-          <Button variant="navy-solid" size="lg" className="rounded-full px-8 shrink-0">
-            <ClipboardList className="w-4 h-4 mr-2" />
-            Registrar Protocolo
-          </Button>
-        </div>
       </div>
     </section>
   );
