@@ -56,7 +56,7 @@ const HeroCarousel = () => {
           <div className="absolute inset-0 bg-gradient-to-r from-[#022c22]/85 via-[#064e3b]/50 to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 md:px-12 max-w-3xl">
-              <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald-100 mb-4 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-400/20">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-white mb-4 bg-white/20 backdrop-blur-sm px-4 py-1.5 rounded-full">
                 {slide.badge}
               </span>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 text-white drop-shadow-md">

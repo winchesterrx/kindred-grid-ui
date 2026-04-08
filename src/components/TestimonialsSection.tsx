@@ -52,8 +52,8 @@ const TestimonialsSection = () => {
 
       <div className="relative h-full flex items-center z-10">
         <div className="container mx-auto px-6 text-center max-w-3xl">
-          <Quote className="w-10 h-10 text-emerald-400 mx-auto mb-4 opacity-80" />
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald-100/70 mb-6 bg-emerald-500/10 px-3 py-1 rounded-full">
+          <Quote className="w-10 h-10 text-emerald mx-auto mb-4 opacity-100" />
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-white/90 mb-6 bg-white/20 px-4 py-1.5 rounded-full backdrop-blur-sm">
             Depoimentos e Impacto Social
           </span>
 

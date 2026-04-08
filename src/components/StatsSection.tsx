@@ -33,7 +33,7 @@ const StatsSection = () => {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-14">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald-200 mb-3 bg-emerald-500/20 px-4 py-1.5 rounded-full border border-emerald-400/20 shadow-sm">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-white mb-3 bg-white/20 px-4 py-1.5 rounded-full shadow-sm backdrop-blur-sm">
             Transparência e Prestação de Contas
           </span>
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
