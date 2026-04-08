@@ -37,20 +37,20 @@ const ServicesSection = () => {
           alt="Fachada do Hospital" 
           className="w-full h-full object-cover fixed-attachment"
         />
-        {/* Glassmorphism Mask (Bright) */}
-        <div className="absolute inset-0 bg-white/85 backdrop-blur-[8px]" />
+        {/* Glassmorphism Mask (Dark Emerald) */}
+        <div className="absolute inset-0 bg-[#022c22]/80 backdrop-blur-[6px]" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-14">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald mb-3">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#6ee7b7] mb-3">
             Nossos Serviços
           </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-navy mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
             Especialidades e Atendimento
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Hospital Geral filantrópico com <strong className="text-navy">8 especialidades médicas</strong>, atendendo a comunidade de Paulo de Faria e 
+          <p className="text-white/80 max-w-2xl mx-auto leading-relaxed">
+            Hospital Geral filantrópico com <strong className="text-white">8 especialidades médicas</strong>, atendendo a comunidade de Paulo de Faria e 
             municípios da região noroeste paulista pelo SUS.
           </p>
         </div>
@@ -82,16 +82,16 @@ const ServicesSection = () => {
         </div>
 
         {/* Infrastructure */}
-        <div className="mt-28 py-16 px-6 md:px-12 bg-muted/40 rounded-[2.5rem] border border-border/50">
+        <div className="mt-28 py-16 px-6 md:px-12 bg-black/20 rounded-[2.5rem] border border-white/10 backdrop-blur-sm shadow-xl">
           <div className="max-w-6xl mx-auto">
             <div className="flex flex-col items-center justify-center gap-4 mb-14 text-center">
-              <span className="px-4 py-1.5 bg-white shadow-sm border border-border text-emerald font-extrabold uppercase tracking-widest text-[10px] rounded-full">
+              <span className="px-4 py-1.5 bg-white/10 shadow-sm border border-white/20 text-[#6ee7b7] font-extrabold uppercase tracking-widest text-[10px] rounded-full backdrop-blur-md">
                 Infraestrutura do Hospital
               </span>
-              <h3 className="text-3xl md:text-4xl font-extrabold text-navy leading-tight">
+              <h3 className="text-3xl md:text-4xl font-extrabold text-white leading-tight">
                 Instalações e Capacidade
               </h3>
-              <p className="text-muted-foreground text-sm md:text-base max-w-2xl">
+              <p className="text-white/80 text-sm md:text-base max-w-2xl">
                 Ambientes físicos preparados para oferecer acolhimento, tecnologia e segurança nos atendimentos à população.
               </p>
             </div>
@@ -115,11 +115,11 @@ const ServicesSection = () => {
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-border/80">
-              <p className="text-xs text-muted-foreground font-medium mb-4 sm:mb-0">
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-white/20">
+              <p className="text-xs text-white/50 font-medium mb-4 sm:mb-0">
                 * Relatório base atualizado do Governo · CNES: 3536602080869
               </p>
-              <Button variant="outline" size="sm" className="text-xs text-navy hover:text-emerald hover:bg-emerald/5 border-border gap-2 rounded-full font-bold">
+              <Button variant="outline" size="sm" className="text-xs text-white hover:text-navy hover:bg-white border-white/30 gap-2 rounded-full font-bold bg-transparent">
                  Ver Ficha Completa <ArrowRight className="w-3 h-3" />
               </Button>
             </div>
