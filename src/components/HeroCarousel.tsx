@@ -44,7 +44,7 @@ const HeroCarousel = () => {
   }, [next]);
 
   return (
-    <section className="relative w-full h-[520px] md:h-[650px] overflow-hidden bg-emerald-950">
+    <section className="relative w-full h-[520px] md:h-[650px] overflow-hidden bg-emerald-900">
       {slides.map((slide, i) => (
         <div
           key={i}
@@ -53,7 +53,7 @@ const HeroCarousel = () => {
           }`}
         >
           <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-emerald-900/80 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-900/95 via-emerald-800/80 to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 md:px-12 max-w-3xl">
               <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald-100 mb-4 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-400/20">

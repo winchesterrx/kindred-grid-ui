@@ -47,8 +47,8 @@ const TestimonialsSection = () => {
         alt="Equipe médica da Santa Casa de Paulo de Faria"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-emerald-950/90 mix-blend-multiply" />
-      <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/80 to-emerald-950/95" />
+      <div className="absolute inset-0 bg-emerald-900/90 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-800/80 to-emerald-900/95" />
 
       <div className="relative h-full flex items-center z-10">
         <div className="container mx-auto px-6 text-center max-w-3xl">
