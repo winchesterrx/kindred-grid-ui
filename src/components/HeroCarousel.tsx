@@ -13,6 +13,7 @@ const slides = [
     subtitle: "A Irmandade da Santa Casa de Misericórdia de Paulo de Faria oferece saúde, acolhimento e esperança para toda a comunidade e região.",
     cta: "Conheça Nossa História",
     ctaIcon: Heart,
+    ctaTarget: "quem-somos",
   },
   {
     image: heroBanner2,
@@ -21,6 +22,7 @@ const slides = [
     subtitle: "Urgência 24h, laboratório clínico, diagnóstico por imagem, medicina nuclear, maternidade, transplantes e muito mais.",
     cta: "Nossos Serviços",
     ctaIcon: Stethoscope,
+    ctaTarget: "servicos",
   },
   {
     image: heroBanner3,
@@ -29,6 +31,7 @@ const slides = [
     subtitle: "Cada paciente é tratado com dignidade e respeito. Nossa gestão é transparente e aberta à comunidade.",
     cta: "Transparência",
     ctaIcon: Shield,
+    ctaTarget: "transparencia",
   },
 ];
 
@@ -66,11 +69,11 @@ const HeroCarousel = () => {
                 {slide.subtitle}
               </p>
               <div className="flex gap-4 flex-wrap">
-                <Button variant="hero" size="lg" className="rounded-full px-8">
+                <Button variant="hero" size="lg" className="rounded-full px-8" onClick={() => document.getElementById('doacoes')?.scrollIntoView({ behavior: 'smooth' })}>
                   <Heart className="w-4 h-4 mr-1" />
                   Doe Agora
                 </Button>
-                <Button variant="outline-white" size="lg" className="rounded-full px-8">
+                <Button variant="outline-white" size="lg" className="rounded-full px-8" onClick={() => document.getElementById(slide.ctaTarget)?.scrollIntoView({ behavior: 'smooth' })}>
                   <slide.ctaIcon className="w-4 h-4 mr-1" />
                   {slide.cta}
                 </Button>

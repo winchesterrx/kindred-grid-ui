@@ -56,7 +56,7 @@ const SiteHeader = () => {
 
           {/* CTA */}
           <div className="hidden lg:flex">
-            <Button variant="cta" size="lg" className="rounded-full px-7">
+            <Button variant="cta" size="lg" className="rounded-full px-7" onClick={() => document.getElementById('doacoes')?.scrollIntoView({ behavior: 'smooth' })}>
               <Heart className="w-4 h-4 mr-1" />
               Doe Agora
             </Button>
@@ -86,7 +86,7 @@ const SiteHeader = () => {
                 {item.label}
               </a>
             ))}
-            <Button variant="cta" className="w-full rounded-full">
+            <Button variant="cta" className="w-full rounded-full" onClick={() => { setMobileOpen(false); document.getElementById('doacoes')?.scrollIntoView({ behavior: 'smooth' }); }}>
               <Heart className="w-4 h-4 mr-1" />
               Doe Agora
             </Button>
