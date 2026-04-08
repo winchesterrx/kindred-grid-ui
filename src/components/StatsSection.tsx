@@ -27,8 +27,8 @@ const StatsSection = () => {
           alt="Hospital Background" 
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-[#022c22]/80 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#064e3b]/90 to-[#022c22]/95" />
+        <div className="absolute inset-0 bg-[#022c22]/50 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#064e3b]/60 to-[#022c22]/80" />
       </div>
 
       <div className="container mx-auto px-6 relative z-10">
