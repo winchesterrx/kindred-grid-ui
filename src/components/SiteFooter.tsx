@@ -9,9 +9,7 @@ const SiteFooter = () => {
           {/* Col 1 - About */}
           <div>
             <div className="flex items-center gap-2.5 mb-5">
-              <div className="w-10 h-10 rounded-lg bg-navy flex items-center justify-center">
-                <Heart className="w-5 h-5 text-primary-foreground" fill="currentColor" />
-              </div>
+              <img src="/logo.png" alt="Santa Casa Logo" className="w-10 h-10 object-contain" />
               <div>
                 <span className="text-base font-extrabold text-navy block leading-tight">Santa Casa</span>
                 <span className="text-xs text-muted-foreground">de Paulo de Faria</span>

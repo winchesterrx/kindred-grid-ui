@@ -34,9 +34,7 @@ const SiteHeader = () => {
         <div className="container mx-auto flex items-center justify-between h-20 px-6">
           {/* Logo */}
           <a href="/" className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-navy">
-              <Heart className="w-6 h-6 text-primary-foreground" fill="currentColor" />
-            </div>
+            <img src="/logo.png" alt="Santa Casa Logo" className="w-12 h-12 object-contain" />
             <div className="leading-tight">
               <span className="text-lg font-extrabold text-navy tracking-tight">Santa Casa</span>
               <span className="block text-xs text-muted-foreground font-medium -mt-0.5">de Paulo de Faria</span>
