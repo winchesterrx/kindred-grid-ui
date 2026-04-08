@@ -1,6 +1,6 @@
 import {
   Stethoscope, Baby, HeartPulse, Microscope, Scan, Ambulance, Activity, Atom,
-  Building2, ArrowRight,
+  Building2, ArrowRight, BedSingle, Bandage, Users, Scissors
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -16,15 +16,15 @@ const services = [
 ];
 
 const infra = [
-  { name: "Sala de Atendimento Indiferenciado", qty: 1 },
-  { name: "Sala de Curativo", qty: 1 },
-  { name: "Clínicas Indiferenciado", qty: 1 },
-  { name: "Consultórios Não Médicos", qty: 1 },
-  { name: "Sala de Repouso / Observação — Indiferenciado", qty: 2 },
-  { name: "Sala de Cirurgia", qty: 2 },
-  { name: "Sala de Recuperação Pós-Anestésica", qty: 1 },
-  { name: "Sala de Parto Normal", qty: 1 },
-  { name: "Sala de Estabilização / Paciente Crítico", qty: 1 },
+  { name: "Atendimento Indiferenciado", qty: 1, icon: Users },
+  { name: "Sala de Curativos", qty: 1, icon: Bandage },
+  { name: "Clínicas Especializadas", qty: 1, icon: Building2 },
+  { name: "Consultórios (Outros)", qty: 1, icon: Stethoscope },
+  { name: "Repouso e Observação", qty: 2, icon: BedSingle },
+  { name: "Centros Cirúrgicos", qty: 2, icon: Scissors },
+  { name: "Recuperação Pós-Anestésica", qty: 1, icon: Activity },
+  { name: "Centro de Parto", qty: 1, icon: Baby },
+  { name: "Estabilização / Risco", qty: 1, icon: HeartPulse },
 ];
 
 const ServicesSection = () => {
@@ -71,33 +71,41 @@ const ServicesSection = () => {
         </div>
 
         {/* Infrastructure */}
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-center gap-3 mb-8">
-            <Building2 className="w-6 h-6 text-navy" />
-            <h3 className="text-xl font-bold text-navy">Estrutura Física — CNES</h3>
+        <div className="max-w-5xl mx-auto mt-24">
+          <div className="flex flex-col items-center justify-center gap-3 mb-10 text-center">
+            <span className="px-3 py-1 bg-navy/5 text-navy font-bold uppercase tracking-widest text-[10px] rounded-full">
+              Infraestrutura CNES
+            </span>
+            <h3 className="text-2xl font-extrabold text-navy">
+              Capacidade de Atendimento
+            </h3>
           </div>
-          <div className="bg-card rounded-2xl border border-border/60 overflow-hidden shadow-sm">
-            <div className="grid grid-cols-[1fr_auto] text-sm">
-              <div className="px-6 py-3.5 font-bold text-navy bg-muted/60 border-b border-border text-xs uppercase tracking-wider">Ambiente</div>
-              <div className="px-6 py-3.5 font-bold text-navy bg-muted/60 border-b border-border text-center text-xs uppercase tracking-wider">Qtd.</div>
-              {infra.map((item, i) => (
-                <div key={i} className="contents">
-                  <div className={`px-6 py-3 text-muted-foreground ${i < infra.length - 1 ? "border-b border-border/40" : ""}`}>
-                    {item.name}
-                  </div>
-                  <div className={`px-6 py-3 text-center font-bold text-navy ${i < infra.length - 1 ? "border-b border-border/40" : ""}`}>
-                    {item.qty}
-                  </div>
+          
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {infra.map((item, i) => (
+              <div 
+                key={i} 
+                className="bg-card border border-border hover:border-emerald/30 rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all group"
+              >
+                <div className="w-12 h-12 rounded-full bg-emerald/10 text-emerald flex items-center justify-center mb-4 group-hover:bg-emerald group-hover:text-primary-foreground transition-colors duration-300">
+                  <item.icon className="w-6 h-6" />
                 </div>
-              ))}
-            </div>
+                <h4 className="text-sm font-bold text-navy mb-2 leading-tight">
+                  {item.name}
+                </h4>
+                <div className="text-[11px] uppercase font-bold tracking-widest text-muted-foreground bg-muted px-3 py-1 rounded-md w-full">
+                  {item.qty} {item.qty === 1 ? 'Unidade' : 'Unidades'}
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center justify-between mt-4">
-            <p className="text-xs text-muted-foreground">
-              * A estrutura não interfere na disponibilização do atendimento · CNES: 3536602080869
+
+          <div className="flex flex-col sm:flex-row items-center justify-between mt-8 pt-6 border-t border-border/60">
+            <p className="text-xs text-muted-foreground mb-4 sm:mb-0">
+              * Estrutura sujeita a adequações · CNES: 3536602080869
             </p>
-            <Button variant="ghost" size="sm" className="text-xs text-emerald hover:text-navy gap-1">
-              Ficha completa no CNES <ArrowRight className="w-3 h-3" />
+            <Button variant="outline" size="sm" className="text-xs text-navy hover:text-emerald border-border/60 gap-2 rounded-full">
+               Ver Ficha Completa <ArrowRight className="w-3 h-3" />
             </Button>
           </div>
         </div>
