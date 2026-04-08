@@ -29,8 +29,19 @@ const infra = [
 
 const ServicesSection = () => {
   return (
-    <section id="servicos" className="section-white py-20 md:py-28">
-      <div className="container mx-auto px-6">
+    <section id="servicos" className="relative py-20 md:py-28 overflow-hidden">
+      {/* Background Fachada Santa Casa */}
+      <div className="absolute inset-0">
+        <img 
+          src="/fundo.png" 
+          alt="Fachada do Hospital" 
+          className="w-full h-full object-cover fixed-attachment"
+        />
+        {/* Glassmorphism Mask (Bright) */}
+        <div className="absolute inset-0 bg-white/85 backdrop-blur-[8px]" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-14">
           <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald mb-3">
             Nossos Serviços
