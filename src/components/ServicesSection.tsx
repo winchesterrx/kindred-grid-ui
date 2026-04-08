@@ -71,42 +71,47 @@ const ServicesSection = () => {
         </div>
 
         {/* Infrastructure */}
-        <div className="max-w-5xl mx-auto mt-24">
-          <div className="flex flex-col items-center justify-center gap-3 mb-10 text-center">
-            <span className="px-3 py-1 bg-navy/5 text-navy font-bold uppercase tracking-widest text-[10px] rounded-full">
-              Infraestrutura CNES
-            </span>
-            <h3 className="text-2xl font-extrabold text-navy">
-              Capacidade de Atendimento
-            </h3>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {infra.map((item, i) => (
-              <div 
-                key={i} 
-                className="bg-card border border-border hover:border-emerald/30 rounded-2xl p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all group"
-              >
-                <div className="w-12 h-12 rounded-full bg-emerald/10 text-emerald flex items-center justify-center mb-4 group-hover:bg-emerald group-hover:text-primary-foreground transition-colors duration-300">
-                  <item.icon className="w-6 h-6" />
+        <div className="mt-28 py-16 px-6 md:px-12 bg-muted/40 rounded-[2.5rem] border border-border/50">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col items-center justify-center gap-4 mb-14 text-center">
+              <span className="px-4 py-1.5 bg-white shadow-sm border border-border text-emerald font-extrabold uppercase tracking-widest text-[10px] rounded-full">
+                Infraestrutura do Hospital
+              </span>
+              <h3 className="text-3xl md:text-4xl font-extrabold text-navy leading-tight">
+                Instalações e Capacidade
+              </h3>
+              <p className="text-muted-foreground text-sm md:text-base max-w-2xl">
+                Ambientes físicos preparados para oferecer acolhimento, tecnologia e segurança nos atendimentos à população.
+              </p>
+            </div>
+            
+            <div className="flex flex-wrap justify-center gap-4 lg:gap-5">
+              {infra.map((item, i) => (
+                <div 
+                  key={i} 
+                  className="bg-card w-full sm:w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.8rem)] lg:w-[calc(20%-1rem)] border border-border hover:border-emerald/40 hover:shadow-lg rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all duration-300 group hover:-translate-y-1"
+                >
+                  <div className="w-14 h-14 rounded-full bg-emerald/10 text-emerald flex items-center justify-center mb-5 group-hover:bg-emerald group-hover:text-primary-foreground transition-colors duration-300">
+                    <item.icon className="w-7 h-7" />
+                  </div>
+                  <h4 className="text-sm font-bold text-navy mb-3 leading-snug">
+                    {item.name}
+                  </h4>
+                  <div className="mt-auto text-[11px] uppercase font-bold tracking-widest text-emerald bg-emerald/5 px-3 py-1.5 rounded-md w-full border border-emerald/10">
+                    {item.qty} {item.qty === 1 ? 'Unidade' : 'Unidades'}
+                  </div>
                 </div>
-                <h4 className="text-sm font-bold text-navy mb-2 leading-tight">
-                  {item.name}
-                </h4>
-                <div className="text-[11px] uppercase font-bold tracking-widest text-muted-foreground bg-muted px-3 py-1 rounded-md w-full">
-                  {item.qty} {item.qty === 1 ? 'Unidade' : 'Unidades'}
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-between mt-8 pt-6 border-t border-border/60">
-            <p className="text-xs text-muted-foreground mb-4 sm:mb-0">
-              * Estrutura sujeita a adequações · CNES: 3536602080869
-            </p>
-            <Button variant="outline" size="sm" className="text-xs text-navy hover:text-emerald border-border/60 gap-2 rounded-full">
-               Ver Ficha Completa <ArrowRight className="w-3 h-3" />
-            </Button>
+            <div className="flex flex-col sm:flex-row items-center justify-between mt-12 pt-8 border-t border-border/80">
+              <p className="text-xs text-muted-foreground font-medium mb-4 sm:mb-0">
+                * Relatório base atualizado do Governo · CNES: 3536602080869
+              </p>
+              <Button variant="outline" size="sm" className="text-xs text-navy hover:text-emerald hover:bg-emerald/5 border-border gap-2 rounded-full font-bold">
+                 Ver Ficha Completa <ArrowRight className="w-3 h-3" />
+              </Button>
+            </div>
           </div>
         </div>
       </div>
