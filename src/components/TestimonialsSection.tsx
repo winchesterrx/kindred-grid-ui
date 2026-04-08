@@ -47,12 +47,13 @@ const TestimonialsSection = () => {
         alt="Equipe médica da Santa Casa de Paulo de Faria"
         className="absolute inset-0 w-full h-full object-cover"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[hsl(var(--navy)/0.85)] to-[hsl(var(--navy)/0.9)]" />
+      <div className="absolute inset-0 bg-emerald-950/90 mix-blend-multiply" />
+      <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/80 to-emerald-950/95" />
 
-      <div className="relative h-full flex items-center">
+      <div className="relative h-full flex items-center z-10">
         <div className="container mx-auto px-6 text-center max-w-3xl">
-          <Quote className="w-10 h-10 text-secondary mx-auto mb-4 opacity-80" />
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-primary-foreground/50 mb-6">
+          <Quote className="w-10 h-10 text-emerald-400 mx-auto mb-4 opacity-80" />
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald-100/70 mb-6 bg-emerald-500/10 px-3 py-1 rounded-full">
             Depoimentos e Impacto Social
           </span>
 

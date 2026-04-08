@@ -19,13 +19,24 @@ const documents = [
 
 const StatsSection = () => {
   return (
-    <section id="transparencia" className="section-emerald py-20 md:py-28">
-      <div className="container mx-auto px-6">
+    <section id="transparencia" className="relative py-20 md:py-28 overflow-hidden">
+      {/* Background Image Medical */}
+      <div className="absolute inset-0">
+        <img 
+          src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=1600&q=80" 
+          alt="Hospital Background" 
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-emerald-950/80 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/90 to-emerald-950/95" />
+      </div>
+
+      <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-14">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-primary-foreground/70 mb-3">
+          <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald-200 mb-3 bg-emerald-500/20 px-4 py-1.5 rounded-full border border-emerald-400/20 shadow-sm">
             Transparência e Prestação de Contas
           </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-primary-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4">
             Nossos Números Falam
           </h2>
           <p className="text-primary-foreground/80 max-w-2xl mx-auto leading-relaxed">

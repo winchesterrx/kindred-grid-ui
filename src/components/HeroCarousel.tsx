@@ -53,13 +53,13 @@ const HeroCarousel = () => {
           }`}
         >
           <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--navy)/0.85)] via-[hsl(var(--navy)/0.7)] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-950/95 via-emerald-900/80 to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 md:px-12 max-w-3xl">
-              <span className="inline-block text-xs font-bold uppercase tracking-widest text-secondary mb-4 bg-secondary/15 px-3 py-1 rounded-full">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald-100 mb-4 bg-emerald-500/20 px-3 py-1 rounded-full border border-emerald-400/20">
                 {slide.badge}
               </span>
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 text-primary-foreground drop-shadow-md">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 text-white drop-shadow-md">
                 {slide.title}
               </h1>
               <p className="text-base md:text-xl text-primary-foreground/85 mb-8 max-w-xl leading-relaxed">

@@ -95,7 +95,7 @@ const NewsSection = () => {
           <button
             onClick={prev}
             disabled={offset === 0}
-            className="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-primary-foreground hover:bg-navy-light transition-colors disabled:opacity-30"
+            className="w-10 h-10 rounded-full bg-emerald flex items-center justify-center text-white hover:bg-emerald/90 transition-colors disabled:opacity-30"
             aria-label="Anterior"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -103,7 +103,7 @@ const NewsSection = () => {
           <button
             onClick={next}
             disabled={offset === maxOffset}
-            className="w-10 h-10 rounded-full bg-navy flex items-center justify-center text-primary-foreground hover:bg-navy-light transition-colors disabled:opacity-30"
+            className="w-10 h-10 rounded-full bg-emerald flex items-center justify-center text-white hover:bg-emerald/90 transition-colors disabled:opacity-30"
             aria-label="Próximo"
           >
             <ChevronRight className="w-5 h-5" />
