@@ -14,7 +14,7 @@ const SiteHeader = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full transition-all duration-300 bg-white/95 backdrop-blur-md border-b border-border shadow-sm">
+    <>
       {/* Top bar */}
       <div className="bg-emerald text-white text-xs hidden md:block">
         <div className="container mx-auto flex items-center justify-between px-6 py-1.5">
