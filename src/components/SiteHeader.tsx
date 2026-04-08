@@ -6,7 +6,7 @@ const navItems = [
   { label: "Quem Somos", href: "#quem-somos" },
   { label: "Serviços", href: "#servicos" },
   { label: "Transparência", href: "#transparencia" },
-  { label: "Ouvidoria", href: "#ouvidoria" },
+  { label: "Ouvidoria e Contato", href: "#ouvidoria" },
   { label: "Notícias", href: "#noticias" },
 ];
 

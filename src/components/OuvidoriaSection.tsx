@@ -74,15 +74,20 @@ const OuvidoriaSection = () => {
   return (
     <section id="ouvidoria" className="section-white py-20 md:py-28">
       <div className="container mx-auto px-6">
-        <div className="text-center mb-14">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest text-emerald mb-3">
-            Ouvidoria
-          </span>
-          <h2 className="text-3xl md:text-4xl font-extrabold text-navy mb-4">
-            Canal de Manifestações
+        <div className="text-center mb-16 relative">
+          <div className="absolute inset-x-0 top-1/2 -z-10 flex -translate-y-1/2 items-center" aria-hidden="true">
+            <div className="w-full border-t border-border"></div>
+          </div>
+          <div className="relative flex justify-center">
+            <span className="px-4 bg-white text-xs font-bold uppercase tracking-widest text-emerald">
+              Fale Conosco
+            </span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-extrabold text-navy mt-6 mb-4">
+            Ouvidoria, Dúvidas, Sugestões e Reclamações
           </h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Registre elogios, sugestões, reclamações ou denúncias com total sigilo. Acompanhe o andamento da sua manifestação.
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm md:text-base">
+            Seu canal direto e confidencial com a Santa Casa. Registre sua manifestação com segurança e acompanhe o andamento pelo protocolo gerado.
           </p>
         </div>
 
