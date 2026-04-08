@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Download, FileText, Users, HeartPulse, Stethoscope, BedDouble } from "lucide-react";
 
 const stats = [
-  { icon: Users, value: "10.000+", label: "Atendimentos / Mês" },
-  { icon: HeartPulse, value: "5.200+", label: "Cirurgias / Ano" },
-  { icon: Stethoscope, value: "350+", label: "Profissionais de Saúde" },
-  { icon: BedDouble, value: "280", label: "Leitos Disponíveis" },
+  { icon: Users, value: "3.000+", label: "Atendimentos / Mês" },
+  { icon: HeartPulse, value: "1.200+", label: "Cirurgias / Ano" },
+  { icon: Stethoscope, value: "8", label: "Especialidades" },
+  { icon: BedDouble, value: "12", label: "Salas e Ambientes" },
 ];
 
 const documents = [

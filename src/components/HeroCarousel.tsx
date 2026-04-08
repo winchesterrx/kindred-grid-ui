@@ -9,19 +9,19 @@ const slides = [
   {
     image: heroBanner1,
     title: "Cuidar é a Nossa Missão",
-    subtitle: "Há mais de 100 anos levando saúde, acolhimento e esperança à comunidade.",
+    subtitle: "A Santa Casa de Paulo de Faria: saúde, acolhimento e esperança para toda a comunidade.",
     cta: "Conheça Nossa História",
   },
   {
     image: heroBanner2,
-    title: "Excelência em Saúde Pública",
-    subtitle: "Infraestrutura moderna e equipe especializada a serviço de todos.",
+    title: "Hospital Geral Completo",
+    subtitle: "Urgência 24h, laboratório clínico, diagnóstico por imagem, maternidade e transplantes.",
     cta: "Nossos Serviços",
   },
   {
     image: heroBanner3,
     title: "Humanização no Atendimento",
-    subtitle: "Cada paciente é tratado com dignidade, respeito e carinho.",
+    subtitle: "Cada paciente é tratado com dignidade, respeito e carinho em Paulo de Faria.",
     cta: "Faça Parte",
   },
 ];
@@ -46,11 +46,7 @@ const HeroCarousel = () => {
             i === current ? "opacity-100" : "opacity-0 pointer-events-none"
           }`}
         >
-          <img
-            src={slide.image}
-            alt={slide.title}
-            className="w-full h-full object-cover"
-          />
+          <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
           <div className="absolute inset-0 bg-navy/70" />
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 md:px-12 max-w-3xl">
