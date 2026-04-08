@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Heart } from "lucide-react";
+import { ChevronLeft, ChevronRight, Heart, Stethoscope, Shield } from "lucide-react";
 import heroBanner1 from "@/assets/hero-banner-1.jpg";
 import heroBanner2 from "@/assets/hero-banner-2.jpg";
 import heroBanner3 from "@/assets/hero-banner-3.jpg";
@@ -8,21 +8,27 @@ import heroBanner3 from "@/assets/hero-banner-3.jpg";
 const slides = [
   {
     image: heroBanner1,
+    badge: "Desde 1940 · Paulo de Faria - SP",
     title: "Cuidar é a Nossa Missão",
-    subtitle: "A Santa Casa de Paulo de Faria: saúde, acolhimento e esperança para toda a comunidade.",
+    subtitle: "A Irmandade da Santa Casa de Misericórdia de Paulo de Faria oferece saúde, acolhimento e esperança para toda a comunidade e região.",
     cta: "Conheça Nossa História",
+    ctaIcon: Heart,
   },
   {
     image: heroBanner2,
-    title: "Hospital Geral Completo",
-    subtitle: "Urgência 24h, laboratório clínico, diagnóstico por imagem, maternidade e transplantes.",
+    badge: "Hospital Geral · CNES 3536602080869",
+    title: "8 Especialidades Médicas",
+    subtitle: "Urgência 24h, laboratório clínico, diagnóstico por imagem, medicina nuclear, maternidade, transplantes e muito mais.",
     cta: "Nossos Serviços",
+    ctaIcon: Stethoscope,
   },
   {
     image: heroBanner3,
-    title: "Humanização no Atendimento",
-    subtitle: "Cada paciente é tratado com dignidade, respeito e carinho em Paulo de Faria.",
-    cta: "Faça Parte",
+    badge: "Filantropia e Compromisso Social",
+    title: "Humanização e Transparência",
+    subtitle: "Cada paciente é tratado com dignidade e respeito. Nossa gestão é transparente e aberta à comunidade.",
+    cta: "Transparência",
+    ctaIcon: Shield,
   },
 ];
 
@@ -38,7 +44,7 @@ const HeroCarousel = () => {
   }, [next]);
 
   return (
-    <section className="relative w-full h-[520px] md:h-[620px] overflow-hidden section-navy">
+    <section className="relative w-full h-[520px] md:h-[650px] overflow-hidden section-navy">
       {slides.map((slide, i) => (
         <div
           key={i}
@@ -47,9 +53,12 @@ const HeroCarousel = () => {
           }`}
         >
           <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-navy/70" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--navy)/0.85)] via-[hsl(var(--navy)/0.7)] to-transparent" />
           <div className="absolute inset-0 flex items-center">
             <div className="container mx-auto px-6 md:px-12 max-w-3xl">
+              <span className="inline-block text-xs font-bold uppercase tracking-widest text-secondary mb-4 bg-secondary/15 px-3 py-1 rounded-full">
+                {slide.badge}
+              </span>
               <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 text-primary-foreground drop-shadow-md">
                 {slide.title}
               </h1>
@@ -62,6 +71,7 @@ const HeroCarousel = () => {
                   Doe Agora
                 </Button>
                 <Button variant="outline-white" size="lg" className="rounded-full px-8">
+                  <slide.ctaIcon className="w-4 h-4 mr-1" />
                   {slide.cta}
                 </Button>
               </div>
@@ -73,27 +83,27 @@ const HeroCarousel = () => {
       {/* Arrows */}
       <button
         onClick={prev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors text-primary-foreground"
+        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 transition-colors text-primary-foreground backdrop-blur-sm"
         aria-label="Anterior"
       >
         <ChevronLeft className="w-5 h-5" />
       </button>
       <button
         onClick={next}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors text-primary-foreground"
+        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/25 transition-colors text-primary-foreground backdrop-blur-sm"
         aria-label="Próximo"
       >
         <ChevronRight className="w-5 h-5" />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2.5">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2.5">
         {slides.map((_, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
-              i === current ? "bg-secondary w-8" : "bg-white/40 hover:bg-white/60"
+            className={`h-2.5 rounded-full transition-all duration-300 ${
+              i === current ? "bg-secondary w-10" : "bg-white/40 hover:bg-white/60 w-2.5"
             }`}
             aria-label={`Slide ${i + 1}`}
           />

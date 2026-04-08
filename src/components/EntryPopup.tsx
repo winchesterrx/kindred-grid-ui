@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Bell, Calendar, MapPin } from "lucide-react";
+import { X, Bell, Calendar, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const STORAGE_KEY = "sc_popup_dismissed";
@@ -35,7 +35,7 @@ const EntryPopup = () => {
       className={`fixed inset-0 z-[100] flex items-center justify-center bg-foreground/60 backdrop-blur-sm transition-opacity duration-300 ${closing ? "opacity-0" : "animate-in fade-in duration-300"}`}
       onClick={(e) => { if (e.target === e.currentTarget) close(); }}
     >
-      <div className={`relative bg-card rounded-2xl shadow-2xl max-w-md w-[92%] overflow-hidden transition-transform duration-300 ${closing ? "scale-95" : "animate-in zoom-in-95 duration-300"}`}>
+      <div className={`relative bg-card rounded-2xl shadow-2xl max-w-lg w-[94%] overflow-hidden transition-transform duration-300 ${closing ? "scale-95" : "animate-in zoom-in-95 duration-300"}`}>
         {/* Close */}
         <button
           onClick={close}
@@ -45,21 +45,24 @@ const EntryPopup = () => {
           <X className="w-4 h-4 text-primary-foreground" />
         </button>
 
-        {/* Header visual */}
+        {/* Header visual — placeholder for uploaded image */}
         <div className="w-full bg-gradient-to-br from-navy via-navy to-emerald p-8 pb-6">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full bg-white/15 flex items-center justify-center">
               <Bell className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xs font-bold uppercase tracking-widest text-primary-foreground/70">
-              Aviso Importante
-            </span>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-primary-foreground/70">
+                Aviso Importante
+              </span>
+              <span className="block text-[10px] text-primary-foreground/50">Santa Casa de Paulo de Faria</span>
+            </div>
           </div>
           <h3 className="text-xl font-extrabold text-primary-foreground leading-snug mb-2">
             📢 Campanha de Vacinação contra Gripe
           </h3>
           <p className="text-sm text-primary-foreground/80 leading-relaxed">
-            Vacinas disponíveis gratuitamente para toda a comunidade de Paulo de Faria e região.
+            Vacinas disponíveis gratuitamente para toda a comunidade de Paulo de Faria e região. Proteja sua família!
           </p>
         </div>
 
@@ -75,14 +78,21 @@ const EntryPopup = () => {
           <div className="flex items-start gap-3">
             <MapPin className="w-5 h-5 text-emerald mt-0.5 shrink-0" />
             <div>
-              <p className="text-sm font-semibold text-navy">Santa Casa de Paulo de Faria</p>
-              <p className="text-xs text-muted-foreground">Rua Zenha Ribeiro, 958 — Centro</p>
+              <p className="text-sm font-semibold text-navy">Rua Zenha Ribeiro, 958 — Centro</p>
+              <p className="text-xs text-muted-foreground">Paulo de Faria - SP · CEP 15490-000</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <Phone className="w-5 h-5 text-emerald mt-0.5 shrink-0" />
+            <div>
+              <p className="text-sm font-semibold text-navy">(17) 3292-1373</p>
+              <p className="text-xs text-muted-foreground">Informações e dúvidas</p>
             </div>
           </div>
 
           <div className="bg-muted/50 rounded-xl p-3">
             <p className="text-xs text-muted-foreground leading-relaxed">
-              📋 Traga seu <strong className="text-navy">documento de identidade</strong> e <strong className="text-navy">cartão do SUS</strong>. Vacinas para todas as idades.
+              📋 Traga seu <strong className="text-navy">documento de identidade</strong> e <strong className="text-navy">cartão do SUS</strong>. Vacinas para todas as idades — crianças, adultos e idosos.
             </p>
           </div>
 
