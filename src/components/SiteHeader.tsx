@@ -22,7 +22,7 @@ const SiteHeader = () => {
           </div>
           <div className="leading-tight">
             <span className="text-lg font-bold text-navy tracking-tight">Santa Casa</span>
-            <span className="block text-xs text-muted-foreground font-medium -mt-0.5">de Misericórdia</span>
+            <span className="block text-xs text-muted-foreground font-medium -mt-0.5">de Paulo de Faria</span>
           </div>
         </a>
 
