@@ -7,13 +7,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   Heart, LogOut, MessageCircle, FileText, Newspaper,
-  Send, Trash2, Edit, Plus, X, Filter
+  Send, Trash2, Edit, Plus, X, Filter, Star, CheckCircle, XCircle
 } from "lucide-react";
 import {
   listarManifestacoes, responderManifestacao,
   listarDocumentos, criarDocumento, editarDocumento, excluirDocumento,
   listarNoticias, criarNoticia, editarNoticia, excluirNoticia,
-  type Manifestacao, type DocumentoTransparencia, type Noticia
+  listarDepoimentosAdmin, alterarStatusDepoimento, editarDepoimento, excluirDepoimento,
+  type Manifestacao, type DocumentoTransparencia, type Noticia, type Depoimento
 } from "@/services/mockApi";
 
 const AdminDashboard = () => {
@@ -47,15 +48,17 @@ const AdminDashboard = () => {
 
       <div className="container mx-auto px-6 py-8">
         <Tabs defaultValue="ouvidoria">
-          <TabsList className="mb-8 h-12">
+          <TabsList className="mb-8 h-12 flex flex-wrap h-auto">
             <TabsTrigger value="ouvidoria" className="gap-2"><MessageCircle className="w-4 h-4" /> Ouvidoria</TabsTrigger>
             <TabsTrigger value="transparencia" className="gap-2"><FileText className="w-4 h-4" /> Transparência</TabsTrigger>
             <TabsTrigger value="noticias" className="gap-2"><Newspaper className="w-4 h-4" /> Notícias</TabsTrigger>
+            <TabsTrigger value="depoimentos" className="gap-2"><Star className="w-4 h-4" /> Depoimentos</TabsTrigger>
           </TabsList>
 
           <TabsContent value="ouvidoria"><OuvidoriaPanel /></TabsContent>
           <TabsContent value="transparencia"><TransparenciaPanel /></TabsContent>
           <TabsContent value="noticias"><NoticiasPanel /></TabsContent>
+          <TabsContent value="depoimentos"><DepoimentosPanel /></TabsContent>
         </Tabs>
       </div>
     </div>
@@ -347,6 +350,141 @@ const NoticiasPanel = () => {
                   <div className="flex gap-2 justify-end">
                     <Button variant="ghost" size="sm" onClick={() => handleEdit(n)}><Edit className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(n.id)}><Trash2 className="w-4 h-4" /></Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+};
+
+// ========================
+// Depoimentos Panel
+// ========================
+const DepoimentosPanel = () => {
+  const [items, setItems] = useState<Depoimento[]>([]);
+  const [filter, setFilter] = useState<"todos" | "pendente" | "aprovado" | "recusado">("todos");
+  const [editingItem, setEditingItem] = useState<Depoimento | null>(null);
+  const [form, setForm] = useState({ autor: "", papel: "", texto: "", estrelas: 5 });
+
+  const load = async () => setItems(await listarDepoimentosAdmin());
+  useEffect(() => { load(); }, []);
+
+  const filtered = filter === "todos" ? items : items.filter((d) => d.status === filter);
+
+  const handleStatus = async (id: string, status: "aprovado" | "recusado") => {
+    await alterarStatusDepoimento(id, status);
+    load();
+  };
+
+  const handleDelete = async (id: string) => {
+    await excluirDepoimento(id);
+    load();
+  };
+
+  const startEdit = (d: Depoimento) => {
+    setEditingItem(d);
+    setForm({ autor: d.autor, papel: d.papel, texto: d.texto, estrelas: d.estrelas });
+  };
+
+  const handleSaveEdit = async () => {
+    if (!editingItem) return;
+    await editarDepoimento(editingItem.id, form);
+    setEditingItem(null);
+    load();
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <h2 className="text-xl font-bold text-navy">Gerenciar Depoimentos</h2>
+        <div className="flex gap-2 flex-wrap">
+          {(["todos", "pendente", "aprovado", "recusado"] as const).map((f) => (
+            <Button key={f} variant={filter === f ? "navy-solid" : "outline"} size="sm" onClick={() => setFilter(f)}>
+              <Filter className="w-3 h-3 mr-1" />
+              <span className="capitalize">{f}</span>
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {editingItem && (
+        <div className="bg-card rounded-2xl p-6 border border-border/60 space-y-4">
+          <h3 className="font-bold text-navy">Editar Depoimento</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-semibold text-navy block mb-1">Autor</label>
+              <Input value={form.autor} onChange={(e) => setForm({ ...form, autor: e.target.value })} />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-navy block mb-1">Papel / Função</label>
+              <Input value={form.papel} onChange={(e) => setForm({ ...form, papel: e.target.value })} />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-navy block mb-1">Estrelas (1 a 5)</label>
+              <Input type="number" min="1" max="5" value={form.estrelas} onChange={(e) => setForm({ ...form, estrelas: Number(e.target.value) })} />
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-navy block mb-1">Texto</label>
+            <Textarea rows={3} value={form.texto} onChange={(e) => setForm({ ...form, texto: e.target.value })} />
+          </div>
+          <div className="flex gap-2">
+            <Button variant="navy-solid" onClick={handleSaveEdit}>Salvar Alterações</Button>
+            <Button variant="ghost" onClick={() => setEditingItem(null)}>Cancelar</Button>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-card rounded-2xl border border-border/60 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Autor / Papel</TableHead>
+              <TableHead>Texto</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.map((d) => (
+              <TableRow key={d.id}>
+                <TableCell>
+                  <div className="font-medium text-navy">{d.autor}</div>
+                  <div className="text-xs text-muted-foreground">{d.papel}</div>
+                  <div className="flex gap-0.5 mt-1">
+                    {Array.from({ length: d.estrelas }).map((_, i) => (
+                       <Star key={i} className="w-3 h-3 text-secondary fill-secondary" />
+                    ))}
+                  </div>
+                </TableCell>
+                <TableCell className="max-w-xs truncate" title={d.texto}>{d.texto}</TableCell>
+                <TableCell>
+                  <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${
+                    d.status === 'aprovado' ? 'bg-secondary/15 text-secondary' : 
+                    d.status === 'recusado' ? 'bg-destructive/15 text-destructive' : 
+                    'bg-amber-100 text-amber-700'
+                  }`}>
+                    {d.status.charAt(0).toUpperCase() + d.status.slice(1)}
+                  </span>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex gap-1 justify-end">
+                    {d.status === 'pendente' && (
+                      <>
+                        <Button variant="ghost" size="sm" className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50" onClick={() => handleStatus(d.id, "aprovado")} title="Aprovar">
+                          <CheckCircle className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive hover:bg-destructive/10" onClick={() => handleStatus(d.id, "recusado")} title="Recusar">
+                          <XCircle className="w-4 h-4" />
+                        </Button>
+                      </>
+                    )}
+                    <Button variant="ghost" size="sm" onClick={() => startEdit(d)} title="Editar"><Edit className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(d.id)} title="Excluir"><Trash2 className="w-4 h-4" /></Button>
                   </div>
                 </TableCell>
               </TableRow>

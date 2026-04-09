@@ -29,6 +29,16 @@ export interface Noticia {
   data: string;
 }
 
+export interface Depoimento {
+  id: string;
+  autor: string;
+  papel: string;
+  texto: string;
+  estrelas: number;
+  status: 'pendente' | 'aprovado' | 'recusado';
+  data: string;
+}
+
 // --- In-memory mock data store ---
 
 let manifestacoes: Manifestacao[] = [
@@ -78,6 +88,45 @@ let noticias: Noticia[] = [
   { id: "1", titulo: "Mutirão de Saúde atende mais de 500 pessoas no bairro Centro", corpo: "O mutirão realizado no último sábado contou com consultas de clínica geral, aferição de pressão e testes rápidos.", imagem: "/src/assets/news-1.jpg", data: "2026-03-28" },
   { id: "2", titulo: "Nova ala cirúrgica amplia capacidade em 40%", corpo: "Com investimento de R$ 5 milhões, a nova ala conta com 4 salas cirúrgicas equipadas com tecnologia de ponta.", imagem: "/src/assets/news-2.jpg", data: "2026-03-15" },
   { id: "3", titulo: "Campanha de doação arrecada R$ 200 mil para pediatria", corpo: "A campanha 'Um Sorriso para Cada Criança' superou todas as expectativas e os recursos serão destinados à reforma da ala pediátrica.", imagem: "/src/assets/news-3.jpg", data: "2026-03-02" },
+];
+
+let depoimentos: Depoimento[] = [
+  {
+    id: "1",
+    texto: "Fui atendida com tanto carinho e profissionalismo que me senti acolhida como família. A equipe da Santa Casa salvou minha vida.",
+    autor: "Maria Aparecida S.",
+    papel: "Paciente — Cardiologia",
+    estrelas: 5,
+    status: "aprovado",
+    data: "2026-03-10"
+  },
+  {
+    id: "2",
+    texto: "Meu filho nasceu na maternidade da Santa Casa. Desde o pré-natal até o parto, tivemos um acompanhamento excepcional e humanizado.",
+    autor: "Carlos Eduardo R.",
+    papel: "Pai de paciente — Maternidade",
+    estrelas: 5,
+    status: "aprovado",
+    data: "2026-03-12"
+  },
+  {
+    id: "3",
+    texto: "Trabalhar aqui é uma vocação. A Santa Casa me permite exercer a medicina com propósito e impactar vidas todos os dias em Paulo de Faria.",
+    autor: "Dra. Ana Beatriz L.",
+    papel: "Médica — Pronto-Socorro",
+    estrelas: 5,
+    status: "aprovado",
+    data: "2026-03-15"
+  },
+  {
+    id: "4",
+    texto: "A transparência e o compromisso com a comunidade fazem da Santa Casa uma referência em gestão hospitalar filantrópica.",
+    autor: "José Roberto M.",
+    papel: "Provedor da Irmandade",
+    estrelas: 5,
+    status: "aprovado",
+    data: "2026-03-20"
+  }
 ];
 
 let nextId = 100;
@@ -189,6 +238,59 @@ export async function excluirNoticia(id: string): Promise<boolean> {
   const len = noticias.length;
   noticias = noticias.filter((n) => n.id !== id);
   return noticias.length < len;
+}
+
+// ========================
+// Auth API (mock)
+// ========================
+
+// ========================
+// Depoimentos API
+// ========================
+
+export async function listarDepoimentosAdmin(): Promise<Depoimento[]> {
+  await delay();
+  return [...depoimentos].sort((a, b) => b.data.localeCompare(a.data));
+}
+
+export async function listarDepoimentosAprovados(): Promise<Depoimento[]> {
+  await delay();
+  return depoimentos.filter(d => d.status === 'aprovado').sort((a, b) => b.data.localeCompare(a.data));
+}
+
+export async function criarDepoimento(data: Omit<Depoimento, "id" | "status" | "data">): Promise<Depoimento> {
+  await delay();
+  const d: Depoimento = { 
+    ...data, 
+    id: genId(), 
+    status: 'pendente', 
+    data: new Date().toISOString().slice(0, 10) 
+  };
+  depoimentos.push(d);
+  return d;
+}
+
+export async function editarDepoimento(id: string, data: Partial<Depoimento>): Promise<Depoimento | null> {
+  await delay();
+  const d = depoimentos.find((x) => x.id === id);
+  if (!d) return null;
+  Object.assign(d, data);
+  return d;
+}
+
+export async function alterarStatusDepoimento(id: string, status: 'pendente' | 'aprovado' | 'recusado'): Promise<Depoimento | null> {
+  await delay();
+  const d = depoimentos.find((x) => x.id === id);
+  if (!d) return null;
+  d.status = status;
+  return d;
+}
+
+export async function excluirDepoimento(id: string): Promise<boolean> {
+  await delay();
+  const len = depoimentos.length;
+  depoimentos = depoimentos.filter((n) => n.id !== id);
+  return depoimentos.length < len;
 }
 
 // ========================
