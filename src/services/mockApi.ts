@@ -1,4 +1,4 @@
-// Mock API service layer - simulates future SQL/Firebird backend connections
+// API service layer - Agora conectada ao backend real via Proxy (/api)
 
 export interface Manifestacao {
   id: string;
@@ -39,143 +39,68 @@ export interface Depoimento {
   data: string;
 }
 
-// --- In-memory mock data store ---
+export interface DoacaoTransparencia {
+  id: string;
+  descricao: string;
+  imagem_url: string;
+  curtidas: number;
+  data_publicacao: string;
+}
 
-let manifestacoes: Manifestacao[] = [
-  {
-    id: "1",
-    protocolo: "OUV-2026-0001",
-    cpf: "123.456.789-00",
-    tipo: "elogio",
-    assunto: "Excelente atendimento na Cardiologia",
-    mensagem: "Gostaria de elogiar toda a equipe da ala de cardiologia pelo atendimento humanizado.",
-    status: "respondido",
-    resposta: "Agradecemos seu elogio! Sua mensagem foi encaminhada à equipe da Cardiologia. É muito gratificante saber que estamos no caminho certo.",
-    dataCriacao: "2026-03-15",
-    dataResposta: "2026-03-18",
-  },
-  {
-    id: "2",
-    protocolo: "OUV-2026-0002",
-    cpf: "123.456.789-00",
-    tipo: "reclamacao",
-    assunto: "Demora no Pronto-Socorro",
-    mensagem: "Esperei mais de 4 horas para ser atendido no pronto-socorro.",
-    status: "pendente",
-    dataCriacao: "2026-03-20",
-  },
-  {
-    id: "3",
-    protocolo: "OUV-2026-0003",
-    cpf: "987.654.321-00",
-    tipo: "sugestao",
-    assunto: "Wi-Fi na sala de espera",
-    mensagem: "Sugiro a instalação de Wi-Fi gratuito nas salas de espera.",
-    status: "respondido",
-    resposta: "Obrigado pela sugestão! Já estamos em processo de implementação de Wi-Fi em todas as áreas de espera, com previsão para maio/2026.",
-    dataCriacao: "2026-03-10",
-    dataResposta: "2026-03-12",
-  },
-];
-
-let documentos: DocumentoTransparencia[] = [
-  { id: "1", nome: "Balanço Patrimonial 2024", categoria: "Financeiro", dataPublicacao: "2025-03-15" },
-  { id: "2", nome: "Estatuto Social", categoria: "Institucional", dataPublicacao: "2024-01-10" },
-  { id: "3", nome: "Relatório de Gestão 2024", categoria: "Gestão", dataPublicacao: "2025-04-01" },
-];
-
-let noticias: Noticia[] = [
-  { id: "1", titulo: "Mutirão de Saúde atende mais de 500 pessoas no bairro Centro", corpo: "O mutirão realizado no último sábado contou com consultas de clínica geral, aferição de pressão e testes rápidos.", imagem: "/src/assets/news-1.jpg", data: "2026-03-28" },
-  { id: "2", titulo: "Nova ala cirúrgica amplia capacidade em 40%", corpo: "Com investimento de R$ 5 milhões, a nova ala conta com 4 salas cirúrgicas equipadas com tecnologia de ponta.", imagem: "/src/assets/news-2.jpg", data: "2026-03-15" },
-  { id: "3", titulo: "Campanha de doação arrecada R$ 200 mil para pediatria", corpo: "A campanha 'Um Sorriso para Cada Criança' superou todas as expectativas e os recursos serão destinados à reforma da ala pediátrica.", imagem: "/src/assets/news-3.jpg", data: "2026-03-02" },
-];
-
-let depoimentos: Depoimento[] = [
-  {
-    id: "1",
-    texto: "Fui atendida com tanto carinho e profissionalismo que me senti acolhida como família. A equipe da Santa Casa salvou minha vida.",
-    autor: "Maria Aparecida S.",
-    papel: "Paciente — Cardiologia",
-    estrelas: 5,
-    status: "aprovado",
-    data: "2026-03-10"
-  },
-  {
-    id: "2",
-    texto: "Meu filho nasceu na maternidade da Santa Casa. Desde o pré-natal até o parto, tivemos um acompanhamento excepcional e humanizado.",
-    autor: "Carlos Eduardo R.",
-    papel: "Pai de paciente — Maternidade",
-    estrelas: 5,
-    status: "aprovado",
-    data: "2026-03-12"
-  },
-  {
-    id: "3",
-    texto: "Trabalhar aqui é uma vocação. A Santa Casa me permite exercer a medicina com propósito e impactar vidas todos os dias em Paulo de Faria.",
-    autor: "Dra. Ana Beatriz L.",
-    papel: "Médica — Pronto-Socorro",
-    estrelas: 5,
-    status: "aprovado",
-    data: "2026-03-15"
-  },
-  {
-    id: "4",
-    texto: "A transparência e o compromisso com a comunidade fazem da Santa Casa uma referência em gestão hospitalar filantrópica.",
-    autor: "José Roberto M.",
-    papel: "Provedor da Irmandade",
-    estrelas: 5,
-    status: "aprovado",
-    data: "2026-03-20"
+// Helpers
+const fetchApi = async (url: string, options: RequestInit = {}) => {
+  const token = sessionStorage.getItem("sc_admin_token");
+  const headers: HeadersInit = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
-];
-
-let nextId = 100;
-const genId = () => String(++nextId);
-const genProtocolo = () => `OUV-2026-${String(manifestacoes.length + 1).padStart(4, "0")}`;
-
-// Simulate async delay
-const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+  
+  const response = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(`Erro na requisição: ${response.status} - ${err}`);
+  }
+  return response.json();
+};
 
 // ========================
 // Ouvidoria API
 // ========================
 
-export async function criarManifestacao(data: Omit<Manifestacao, "id" | "protocolo" | "status" | "dataCriacao">): Promise<Manifestacao> {
-  await delay();
-  const nova: Manifestacao = {
-    ...data,
-    id: genId(),
-    protocolo: genProtocolo(),
-    status: "pendente",
-    dataCriacao: new Date().toISOString().slice(0, 10),
-  };
-  manifestacoes.push(nova);
-  return nova;
+export async function criarManifestacao(data: Omit<Manifestacao, "id" | "protocolo" | "status" | "dataCriacao" | "dataResposta" | "resposta">): Promise<any> {
+  const protocolo = `OUV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+  return fetchApi('/api/ouvidoria', {
+    method: 'POST',
+    body: JSON.stringify({ ...data, protocolo }),
+  });
 }
 
 export async function buscarPorProtocolo(protocolo: string): Promise<Manifestacao | null> {
-  await delay();
-  return manifestacoes.find((m) => m.protocolo.toLowerCase() === protocolo.toLowerCase()) || null;
+  const todas = await listarManifestacoes();
+  return todas.find((m: Manifestacao) => m.protocolo.toLowerCase() === protocolo.toLowerCase()) || null;
 }
 
 export async function buscarPorCpf(cpf: string): Promise<Manifestacao[]> {
-  await delay();
-  return manifestacoes.filter((m) => m.cpf === cpf);
+  const todas = await listarManifestacoes();
+  return todas.filter((m: Manifestacao) => m.cpf === cpf);
 }
 
 export async function listarManifestacoes(): Promise<Manifestacao[]> {
-  await delay();
-  return [...manifestacoes].sort((a, b) => b.dataCriacao.localeCompare(a.dataCriacao));
+  const data = await fetchApi('/api/ouvidoria');
+  return data.map((d: any) => ({
+    ...d,
+    dataCriacao: new Date(d.data_criacao).toISOString().split('T')[0],
+    dataResposta: d.data_resposta ? new Date(d.data_resposta).toISOString().split('T')[0] : undefined
+  }));
 }
 
-export async function responderManifestacao(id: string, resposta: string): Promise<Manifestacao | null> {
-  await delay();
-  const m = manifestacoes.find((x) => x.id === id);
-  if (!m) return null;
-  m.resposta = resposta;
-  m.status = "respondido";
-  m.dataResposta = new Date().toISOString().slice(0, 10);
-  return m;
+export async function responderManifestacao(id: string, resposta: string): Promise<any> {
+  return fetchApi(`/api/ouvidoria/${id}/responder`, {
+    method: 'PUT',
+    body: JSON.stringify({ resposta }),
+  });
 }
 
 // ========================
@@ -183,30 +108,44 @@ export async function responderManifestacao(id: string, resposta: string): Promi
 // ========================
 
 export async function listarDocumentos(): Promise<DocumentoTransparencia[]> {
-  await delay();
-  return [...documentos];
+  const data = await fetchApi('/api/documentos');
+  return data.map((d: any) => ({
+    id: d.id.toString(),
+    nome: d.nome,
+    categoria: d.categoria,
+    dataPublicacao: new Date(d.data_publicacao).toISOString().split('T')[0],
+    arquivo: d.arquivo_url
+  }));
 }
 
-export async function criarDocumento(data: Omit<DocumentoTransparencia, "id">): Promise<DocumentoTransparencia> {
-  await delay();
-  const doc: DocumentoTransparencia = { ...data, id: genId() };
-  documentos.push(doc);
-  return doc;
+export async function criarDocumento(data: Omit<DocumentoTransparencia, "id">): Promise<any> {
+  return fetchApi('/api/documentos', {
+    method: 'POST',
+    body: JSON.stringify({
+      nome: data.nome,
+      categoria: data.categoria,
+      data_publicacao: data.dataPublicacao,
+      arquivo_url: data.arquivo || null
+    }),
+  });
 }
 
-export async function editarDocumento(id: string, data: Partial<DocumentoTransparencia>): Promise<DocumentoTransparencia | null> {
-  await delay();
-  const doc = documentos.find((d) => d.id === id);
-  if (!doc) return null;
-  Object.assign(doc, data);
-  return doc;
+export async function editarDocumento(id: string, data: Partial<DocumentoTransparencia>): Promise<any> {
+  return fetchApi(`/api/documentos/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      nome: data.nome,
+      categoria: data.categoria,
+      data_publicacao: data.dataPublicacao,
+      arquivo_url: data.arquivo
+    }),
+  });
 }
 
-export async function excluirDocumento(id: string): Promise<boolean> {
-  await delay();
-  const len = documentos.length;
-  documentos = documentos.filter((d) => d.id !== id);
-  return documentos.length < len;
+export async function excluirDocumento(id: string): Promise<any> {
+  return fetchApi(`/api/documentos/${id}`, {
+    method: 'DELETE',
+  });
 }
 
 // ========================
@@ -214,93 +153,144 @@ export async function excluirDocumento(id: string): Promise<boolean> {
 // ========================
 
 export async function listarNoticias(): Promise<Noticia[]> {
-  await delay();
-  return [...noticias];
+  const data = await fetchApi('/api/noticias');
+  return data.map((d: any) => ({
+    id: d.id.toString(),
+    titulo: d.titulo,
+    corpo: d.corpo,
+    imagem: d.imagem_url || "",
+    data: new Date(d.data_publicacao).toISOString().split('T')[0]
+  }));
 }
 
-export async function criarNoticia(data: Omit<Noticia, "id">): Promise<Noticia> {
-  await delay();
-  const n: Noticia = { ...data, id: genId() };
-  noticias.push(n);
-  return n;
+export async function criarNoticia(data: any): Promise<any> {
+  return fetchApi('/api/noticias', {
+    method: 'POST',
+    body: JSON.stringify({
+      titulo: data.titulo,
+      corpo: data.corpo,
+      imagem_url: data.imagem,
+      data_publicacao: data.data
+    }),
+  });
 }
 
-export async function editarNoticia(id: string, data: Partial<Noticia>): Promise<Noticia | null> {
-  await delay();
-  const n = noticias.find((x) => x.id === id);
-  if (!n) return null;
-  Object.assign(n, data);
-  return n;
+export async function editarNoticia(id: string, data: any): Promise<any> {
+  return fetchApi(`/api/noticias/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      titulo: data.titulo,
+      corpo: data.corpo,
+      imagem_url: data.imagem,
+      data_publicacao: data.data
+    }),
+  });
 }
 
-export async function excluirNoticia(id: string): Promise<boolean> {
-  await delay();
-  const len = noticias.length;
-  noticias = noticias.filter((n) => n.id !== id);
-  return noticias.length < len;
+export async function excluirNoticia(id: string): Promise<any> {
+  return fetchApi(`/api/noticias/${id}`, {
+    method: 'DELETE',
+  });
 }
-
-// ========================
-// Auth API (mock)
-// ========================
 
 // ========================
 // Depoimentos API
 // ========================
 
 export async function listarDepoimentosAdmin(): Promise<Depoimento[]> {
-  await delay();
-  return [...depoimentos].sort((a, b) => b.data.localeCompare(a.data));
+  const data = await fetchApi('/api/depoimentos');
+  return data.map((d: any) => ({
+    id: d.id.toString(),
+    autor: d.autor,
+    papel: d.papel,
+    texto: d.texto,
+    estrelas: d.estrelas,
+    status: d.status,
+    data: new Date(d.data_criacao).toISOString().split('T')[0]
+  }));
 }
 
 export async function listarDepoimentosAprovados(): Promise<Depoimento[]> {
-  await delay();
-  return depoimentos.filter(d => d.status === 'aprovado').sort((a, b) => b.data.localeCompare(a.data));
+  const todos = await listarDepoimentosAdmin();
+  return todos.filter((d: Depoimento) => d.status === 'aprovado');
 }
 
-export async function criarDepoimento(data: Omit<Depoimento, "id" | "status" | "data">): Promise<Depoimento> {
-  await delay();
-  const d: Depoimento = { 
-    ...data, 
-    id: genId(), 
-    status: 'pendente', 
-    data: new Date().toISOString().slice(0, 10) 
-  };
-  depoimentos.push(d);
-  return d;
+export async function criarDepoimento(data: Omit<Depoimento, "id" | "status" | "data">): Promise<any> {
+  return fetchApi('/api/depoimentos', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
 }
 
-export async function editarDepoimento(id: string, data: Partial<Depoimento>): Promise<Depoimento | null> {
-  await delay();
-  const d = depoimentos.find((x) => x.id === id);
-  if (!d) return null;
-  Object.assign(d, data);
-  return d;
+export async function editarDepoimento(id: string, data: Partial<Depoimento>): Promise<any> {
+  return fetchApi(`/api/depoimentos/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
 }
 
-export async function alterarStatusDepoimento(id: string, status: 'pendente' | 'aprovado' | 'recusado'): Promise<Depoimento | null> {
-  await delay();
-  const d = depoimentos.find((x) => x.id === id);
-  if (!d) return null;
-  d.status = status;
-  return d;
+export async function alterarStatusDepoimento(id: string, status: 'pendente' | 'aprovado' | 'recusado'): Promise<any> {
+  return fetchApi(`/api/depoimentos/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status }),
+  });
 }
 
-export async function excluirDepoimento(id: string): Promise<boolean> {
-  await delay();
-  const len = depoimentos.length;
-  depoimentos = depoimentos.filter((n) => n.id !== id);
-  return depoimentos.length < len;
+export async function excluirDepoimento(id: string): Promise<any> {
+  return fetchApi(`/api/depoimentos/${id}`, {
+    method: 'DELETE',
+  });
 }
 
 // ========================
-// Auth API (mock)
+// Doações (Feed Transparência)
 // ========================
 
-export async function loginAdmin(usuario: string, senha: string): Promise<{ success: boolean; token?: string }> {
-  await delay(500);
-  if (usuario === "admin" && senha === "123") {
-    return { success: true, token: "mock-jwt-token-santa-casa" };
+export async function listarDoacoes(): Promise<DoacaoTransparencia[]> {
+  const data = await fetchApi('/api/doacoes');
+  return data.map((d: any) => ({
+    id: d.id.toString(),
+    descricao: d.descricao,
+    imagem_url: d.imagem_url,
+    curtidas: d.curtidas,
+    data_publicacao: new Date(d.data_publicacao).toISOString().split('T')[0]
+  }));
+}
+
+export async function criarDoacao(data: Omit<DoacaoTransparencia, "id" | "data_publicacao" | "curtidas">): Promise<any> {
+  return fetchApi('/api/doacoes', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function editarDoacao(id: string, data: Partial<DoacaoTransparencia>): Promise<any> {
+  return fetchApi(`/api/doacoes/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function excluirDoacao(id: string): Promise<any> {
+  return fetchApi(`/api/doacoes/${id}`, {
+    method: 'DELETE',
+  });
+}
+
+// ========================
+// Auth API
+// ========================
+
+export async function loginAdmin(usuario: string, senha: string): Promise<{ success: boolean; token?: string; message?: string }> {
+  try {
+    const res = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ usuario, senha }),
+    });
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    return { success: false, message: 'Erro ao conectar ao servidor' };
   }
-  return { success: false };
 }

@@ -1,0 +1,272 @@
+const express = require('express');
+const cors = require('cors');
+const db = require('./db');
+
+const app = express();
+
+// A Vercel Serverless Function injeta os próprios parsers de body, 
+// mas é bom manter para rodar localmente.
+app.use(cors());
+app.use(express.json());
+
+// ==========================================
+// AUTH (MOCK SIMPLES -> EM BREVE COM BCRYPT E JWT)
+// ==========================================
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { usuario, senha } = req.body;
+    const [rows] = await db.query('SELECT * FROM usuarios WHERE usuario = ? AND senha_hash = ?', [usuario, senha]);
+    if (rows.length > 0) {
+      res.json({ success: true, token: 'fake-jwt-token-santa-casa', user: rows[0] });
+    } else {
+      res.status(401).json({ success: false, message: 'Credenciais inválidas' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// OUVIDORIA
+// ==========================================
+app.get('/api/ouvidoria', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM ouvidoria_manifestacoes ORDER BY data_criacao DESC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/ouvidoria', async (req, res) => {
+  try {
+    const { protocolo, cpf, tipo, assunto, mensagem } = req.body;
+    const [result] = await db.query(
+      'INSERT INTO ouvidoria_manifestacoes (protocolo, cpf, tipo, assunto, mensagem) VALUES (?, ?, ?, ?, ?)',
+      [protocolo, cpf, tipo, assunto, mensagem]
+    );
+    res.json({ id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/ouvidoria/:id/responder', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { resposta } = req.body;
+    await db.query(
+      'UPDATE ouvidoria_manifestacoes SET resposta = ?, status = "respondido", data_resposta = NOW() WHERE id = ?',
+      [resposta, id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// TRANSPARÊNCIA (DOCUMENTOS)
+// ==========================================
+app.get('/api/documentos', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM transparencia_documentos ORDER BY data_publicacao DESC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/documentos', async (req, res) => {
+  try {
+    const { nome, categoria, data_publicacao, arquivo_url } = req.body;
+    const [result] = await db.query(
+      'INSERT INTO transparencia_documentos (nome, categoria, data_publicacao, arquivo_url) VALUES (?, ?, ?, ?)',
+      [nome, categoria, data_publicacao, arquivo_url || null]
+    );
+    res.json({ id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/documentos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nome, categoria, data_publicacao, arquivo_url } = req.body;
+    await db.query(
+      'UPDATE transparencia_documentos SET nome = ?, categoria = ?, data_publicacao = ?, arquivo_url = ? WHERE id = ?',
+      [nome, categoria, data_publicacao, arquivo_url || null, id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/documentos/:id', async (req, res) => {
+  try {
+    await db.query('DELETE FROM transparencia_documentos WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// NOTÍCIAS
+// ==========================================
+app.get('/api/noticias', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM noticias ORDER BY data_publicacao DESC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/noticias', async (req, res) => {
+  try {
+    const { titulo, corpo, imagem_url, data_publicacao } = req.body;
+    const [result] = await db.query(
+      'INSERT INTO noticias (titulo, corpo, imagem_url, data_publicacao) VALUES (?, ?, ?, ?)',
+      [titulo, corpo, imagem_url || null, data_publicacao]
+    );
+    res.json({ id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/noticias/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { titulo, corpo, imagem_url, data_publicacao } = req.body;
+    await db.query(
+      'UPDATE noticias SET titulo = ?, corpo = ?, imagem_url = ?, data_publicacao = ? WHERE id = ?',
+      [titulo, corpo, imagem_url || null, data_publicacao, id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/noticias/:id', async (req, res) => {
+  try {
+    await db.query('DELETE FROM noticias WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// DEPOIMENTOS
+// ==========================================
+app.get('/api/depoimentos', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM depoimentos ORDER BY data_criacao DESC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/depoimentos', async (req, res) => {
+  try {
+    const { autor, papel, texto, estrelas } = req.body;
+    const [result] = await db.query(
+      'INSERT INTO depoimentos (autor, papel, texto, estrelas, status) VALUES (?, ?, ?, ?, "pendente")',
+      [autor, papel, texto, estrelas || 5]
+    );
+    res.json({ id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/depoimentos/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    await db.query('UPDATE depoimentos SET status = ? WHERE id = ?', [status, id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/depoimentos/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { autor, papel, texto, estrelas } = req.body;
+    await db.query(
+      'UPDATE depoimentos SET autor = ?, papel = ?, texto = ?, estrelas = ? WHERE id = ?',
+      [autor, papel, texto, estrelas, id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/depoimentos/:id', async (req, res) => {
+  try {
+    await db.query('DELETE FROM depoimentos WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// DOAÇÕES (FEED TRANSPARÊNCIA)
+// ==========================================
+app.get('/api/doacoes', async (req, res) => {
+  try {
+    const [rows] = await db.query('SELECT * FROM doacoes_transparencia ORDER BY data_publicacao DESC');
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/doacoes', async (req, res) => {
+  try {
+    const { descricao, imagem_url } = req.body;
+    const [result] = await db.query(
+      'INSERT INTO doacoes_transparencia (descricao, imagem_url) VALUES (?, ?)',
+      [descricao, imagem_url]
+    );
+    res.json({ id: result.insertId });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/doacoes/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { descricao, imagem_url } = req.body;
+    await db.query(
+      'UPDATE doacoes_transparencia SET descricao = ?, imagem_url = ? WHERE id = ?',
+      [descricao, imagem_url, id]
+    );
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/doacoes/:id', async (req, res) => {
+  try {
+    await db.query('DELETE FROM doacoes_transparencia WHERE id = ?', [req.params.id]);
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Exporta o aplicativo Express para ser consumido como função Serverless pela Vercel
+module.exports = app;

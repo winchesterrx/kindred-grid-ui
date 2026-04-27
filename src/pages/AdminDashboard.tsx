@@ -14,7 +14,8 @@ import {
   listarDocumentos, criarDocumento, editarDocumento, excluirDocumento,
   listarNoticias, criarNoticia, editarNoticia, excluirNoticia,
   listarDepoimentosAdmin, alterarStatusDepoimento, editarDepoimento, excluirDepoimento,
-  type Manifestacao, type DocumentoTransparencia, type Noticia, type Depoimento
+  listarDoacoes, criarDoacao, editarDoacao, excluirDoacao,
+  type Manifestacao, type DocumentoTransparencia, type Noticia, type Depoimento, type DoacaoTransparencia
 } from "@/services/mockApi";
 
 const AdminDashboard = () => {
@@ -53,12 +54,14 @@ const AdminDashboard = () => {
             <TabsTrigger value="transparencia" className="gap-2"><FileText className="w-4 h-4" /> Transparência</TabsTrigger>
             <TabsTrigger value="noticias" className="gap-2"><Newspaper className="w-4 h-4" /> Notícias</TabsTrigger>
             <TabsTrigger value="depoimentos" className="gap-2"><Star className="w-4 h-4" /> Depoimentos</TabsTrigger>
+            <TabsTrigger value="doacoes" className="gap-2"><Heart className="w-4 h-4" /> Doações</TabsTrigger>
           </TabsList>
 
           <TabsContent value="ouvidoria"><OuvidoriaPanel /></TabsContent>
           <TabsContent value="transparencia"><TransparenciaPanel /></TabsContent>
           <TabsContent value="noticias"><NoticiasPanel /></TabsContent>
           <TabsContent value="depoimentos"><DepoimentosPanel /></TabsContent>
+          <TabsContent value="doacoes"><DoacoesPanel /></TabsContent>
         </Tabs>
       </div>
     </div>
@@ -485,6 +488,101 @@ const DepoimentosPanel = () => {
                     )}
                     <Button variant="ghost" size="sm" onClick={() => startEdit(d)} title="Editar"><Edit className="w-4 h-4" /></Button>
                     <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(d.id)} title="Excluir"><Trash2 className="w-4 h-4" /></Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+};
+
+// ========================
+// Doações Panel
+// ========================
+const DoacoesPanel = () => {
+  const [items, setItems] = useState<DoacaoTransparencia[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [editingItem, setEditingItem] = useState<DoacaoTransparencia | null>(null);
+  const [form, setForm] = useState({ descricao: "", imagem_url: "" });
+
+  const load = async () => setItems(await listarDoacoes());
+  useEffect(() => { load(); }, []);
+
+  const handleSave = async () => {
+    if (!form.descricao || !form.imagem_url) return;
+    if (editingItem) {
+      await editarDoacao(editingItem.id, form);
+    } else {
+      await criarDoacao(form);
+    }
+    setShowForm(false);
+    setEditingItem(null);
+    setForm({ descricao: "", imagem_url: "" });
+    load();
+  };
+
+  const handleEdit = (d: DoacaoTransparencia) => {
+    setEditingItem(d);
+    setForm({ descricao: d.descricao, imagem_url: d.imagem_url });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: string) => {
+    await excluirDoacao(id);
+    load();
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-navy">Feed de Transparência de Doações</h2>
+        <Button variant="navy-solid" onClick={() => { setShowForm(!showForm); setEditingItem(null); setForm({ descricao: "", imagem_url: "" }); }}>
+          {showForm ? <><X className="w-4 h-4 mr-1" /> Cancelar</> : <><Plus className="w-4 h-4 mr-1" /> Novo Post</>}
+        </Button>
+      </div>
+
+      {showForm && (
+        <div className="bg-card rounded-2xl p-6 border border-border/60 space-y-4">
+          <h3 className="font-bold text-navy">{editingItem ? "Editar Post" : "Novo Post de Doação"}</h3>
+          <div>
+            <label className="text-sm font-semibold text-navy block mb-1">URL da Imagem</label>
+            <Input placeholder="Ex: /src/assets/doacao-1.jpg" value={form.imagem_url} onChange={(e) => setForm({ ...form, imagem_url: e.target.value })} />
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-navy block mb-1">Descrição</label>
+            <Textarea rows={4} value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
+          </div>
+          <Button variant="navy-solid" onClick={handleSave}>
+            {editingItem ? "Salvar Alterações" : "Publicar"}
+          </Button>
+        </div>
+      )}
+
+      <div className="bg-card rounded-2xl border border-border/60 overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Imagem</TableHead>
+              <TableHead>Descrição</TableHead>
+              <TableHead>Data</TableHead>
+              <TableHead className="text-right">Ações</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {items.map((d) => (
+              <TableRow key={d.id}>
+                <TableCell>
+                  <img src={d.imagem_url} alt="Doação" className="w-16 h-16 object-cover rounded-md" />
+                </TableCell>
+                <TableCell className="max-w-xs truncate">{d.descricao}</TableCell>
+                <TableCell className="text-xs">{d.data_publicacao}</TableCell>
+                <TableCell className="text-right">
+                  <div className="flex gap-2 justify-end">
+                    <Button variant="ghost" size="sm" onClick={() => handleEdit(d)}><Edit className="w-4 h-4" /></Button>
+                    <Button variant="ghost" size="sm" className="text-destructive hover:text-destructive" onClick={() => handleDelete(d.id)}><Trash2 className="w-4 h-4" /></Button>
                   </div>
                 </TableCell>
               </TableRow>
