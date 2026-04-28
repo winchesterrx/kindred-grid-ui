@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -120,7 +120,7 @@ const OuvidoriaPanel = () => {
         </TableHeader>
         <TableBody>
           {filtered.map((m) => (
-            <>
+            <Fragment key={m.id}>
               <TableRow key={m.id}>
                 <TableCell className="font-medium text-navy">{m.protocolo}</TableCell>
                 <TableCell className="text-xs">{m.cpf}</TableCell>
@@ -156,7 +156,7 @@ const OuvidoriaPanel = () => {
                   </TableCell>
                 </TableRow>
               )}
-            </>
+            </Fragment>
           ))}
         </TableBody>
       </Table>
@@ -205,7 +205,8 @@ const TransparenciaPanel = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-navy">Documentos de Transparência</h2>
         <Button variant="navy-solid" onClick={() => { setShowForm(!showForm); setEditingDoc(null); setForm({ nome: "", categoria: "", dataPublicacao: "" }); }}>
-          {showForm ? <><X className="w-4 h-4 mr-1" /> Cancelar</> : <><Plus className="w-4 h-4 mr-1" /> Novo Documento</>}
+          {showForm ? <X className="w-4 h-4 mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+          <span>{showForm ? "Cancelar" : "Novo Documento"}</span>
         </Button>
       </div>
 
@@ -304,7 +305,8 @@ const NoticiasPanel = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-navy">Notícias e Eventos</h2>
         <Button variant="navy-solid" onClick={() => { setShowForm(!showForm); setEditingItem(null); setForm({ titulo: "", corpo: "", imagem: "", data: "" }); }}>
-          {showForm ? <><X className="w-4 h-4 mr-1" /> Cancelar</> : <><Plus className="w-4 h-4 mr-1" /> Nova Notícia</>}
+          {showForm ? <X className="w-4 h-4 mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+          <span>{showForm ? "Cancelar" : "Nova Notícia"}</span>
         </Button>
       </div>
 
@@ -540,7 +542,8 @@ const DoacoesPanel = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-navy">Feed de Transparência de Doações</h2>
         <Button variant="navy-solid" onClick={() => { setShowForm(!showForm); setEditingItem(null); setForm({ descricao: "", imagem_url: "" }); }}>
-          {showForm ? <><X className="w-4 h-4 mr-1" /> Cancelar</> : <><Plus className="w-4 h-4 mr-1" /> Novo Post</>}
+          {showForm ? <X className="w-4 h-4 mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
+          <span>{showForm ? "Cancelar" : "Novo Post"}</span>
         </Button>
       </div>
 
