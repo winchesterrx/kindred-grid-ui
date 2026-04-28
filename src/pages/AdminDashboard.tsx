@@ -1,5 +1,6 @@
 import { useState, useEffect, Fragment } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,8 +8,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import {
   Heart, LogOut, MessageCircle, FileText, Newspaper,
-  Send, Trash2, Edit, Plus, X, Filter, Star, CheckCircle, XCircle
+  Send, Trash2, Edit, Plus, X, Filter, Star, CheckCircle, XCircle, UploadCloud
 } from "lucide-react";
+
+// Helper para converter File para Base64
+const fileToBase64 = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+};
 import {
   listarManifestacoes, responderManifestacao,
   listarDocumentos, criarDocumento, editarDocumento, excluirDocumento,
@@ -171,10 +182,22 @@ const TransparenciaPanel = () => {
   const [docs, setDocs] = useState<DocumentoTransparencia[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingDoc, setEditingDoc] = useState<DocumentoTransparencia | null>(null);
-  const [form, setForm] = useState({ nome: "", categoria: "", dataPublicacao: "" });
+  const [form, setForm] = useState({ nome: "", categoria: "", dataPublicacao: "", arquivo: "" });
 
   const load = async () => setDocs(await listarDocumentos());
   useEffect(() => { load(); }, []);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("O arquivo deve ter no máximo 5MB.");
+        return;
+      }
+      const base64 = await fileToBase64(file);
+      setForm({ ...form, arquivo: base64 });
+    }
+  };
 
   const handleSave = async () => {
     if (!form.nome || !form.categoria || !form.dataPublicacao) return;
@@ -191,7 +214,7 @@ const TransparenciaPanel = () => {
 
   const handleEdit = (doc: DocumentoTransparencia) => {
     setEditingDoc(doc);
-    setForm({ nome: doc.nome, categoria: doc.categoria, dataPublicacao: doc.dataPublicacao });
+    setForm({ nome: doc.nome, categoria: doc.categoria, dataPublicacao: doc.dataPublicacao, arquivo: doc.arquivo || "" });
     setShowForm(true);
   };
 
@@ -204,7 +227,7 @@ const TransparenciaPanel = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-navy">Documentos de Transparência</h2>
-        <Button variant="navy-solid" onClick={() => { setShowForm(!showForm); setEditingDoc(null); setForm({ nome: "", categoria: "", dataPublicacao: "" }); }}>
+        <Button variant="navy-solid" onClick={() => { setShowForm(!showForm); setEditingDoc(null); setForm({ nome: "", categoria: "", dataPublicacao: "", arquivo: "" }); }}>
           {showForm ? <X className="w-4 h-4 mr-1" /> : <Plus className="w-4 h-4 mr-1" />}
           <span>{showForm ? "Cancelar" : "Novo Documento"}</span>
         </Button>
@@ -225,6 +248,13 @@ const TransparenciaPanel = () => {
             <div>
               <label className="text-sm font-semibold text-navy block mb-1">Data de Publicação</label>
               <Input type="date" value={form.dataPublicacao} onChange={(e) => setForm({ ...form, dataPublicacao: e.target.value })} />
+            </div>
+          </div>
+          <div>
+            <label className="text-sm font-semibold text-navy block mb-1">Arquivo Anexo (PDF/Imagem - Max 5MB)</label>
+            <div className="flex items-center gap-4">
+              <Input type="file" accept=".pdf,image/*" onChange={handleFileUpload} className="cursor-pointer file:cursor-pointer max-w-sm" />
+              {form.arquivo && <span className="text-xs font-bold text-emerald whitespace-nowrap"><CheckCircle className="w-4 h-4 inline mr-1"/> Arquivo Anexado</span>}
             </div>
           </div>
           <Button variant="navy-solid" onClick={handleSave}>
@@ -276,6 +306,18 @@ const NoticiasPanel = () => {
   const load = async () => setItems(await listarNoticias());
   useEffect(() => { load(); }, []);
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("A imagem deve ter no máximo 5MB.");
+        return;
+      }
+      const base64 = await fileToBase64(file);
+      setForm({ ...form, imagem: base64 });
+    }
+  };
+
   const handleSave = async () => {
     if (!form.titulo || !form.data) return;
     if (editingItem) {
@@ -324,8 +366,17 @@ const NoticiasPanel = () => {
             </div>
           </div>
           <div>
-            <label className="text-sm font-semibold text-navy block mb-1">URL da Imagem de Capa</label>
-            <Input placeholder="Ex: /src/assets/news-1.jpg" value={form.imagem} onChange={(e) => setForm({ ...form, imagem: e.target.value })} />
+            <label className="text-sm font-semibold text-navy block mb-1">Imagem de Capa (Max 5MB)</label>
+            <div className="flex gap-4 items-center">
+              <div className="flex-1">
+                <Input type="file" accept="image/*" onChange={handleImageUpload} className="cursor-pointer file:cursor-pointer" />
+              </div>
+              {form.imagem && (
+                <div className="w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-border">
+                  <img src={form.imagem} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+              )}
+            </div>
           </div>
           <div>
             <label className="text-sm font-semibold text-navy block mb-1">Corpo da Notícia</label>
@@ -513,6 +564,18 @@ const DoacoesPanel = () => {
   const load = async () => setItems(await listarDoacoes());
   useEffect(() => { load(); }, []);
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("A imagem deve ter no máximo 5MB.");
+        return;
+      }
+      const base64 = await fileToBase64(file);
+      setForm({ ...form, imagem_url: base64 });
+    }
+  };
+
   const handleSave = async () => {
     if (!form.descricao || !form.imagem_url) return;
     if (editingItem) {
@@ -551,8 +614,22 @@ const DoacoesPanel = () => {
         <div className="bg-card rounded-2xl p-6 border border-border/60 space-y-4">
           <h3 className="font-bold text-navy">{editingItem ? "Editar Post" : "Novo Post de Doação"}</h3>
           <div>
-            <label className="text-sm font-semibold text-navy block mb-1">URL da Imagem</label>
-            <Input placeholder="Ex: /src/assets/doacao-1.jpg" value={form.imagem_url} onChange={(e) => setForm({ ...form, imagem_url: e.target.value })} />
+            <label className="text-sm font-semibold text-navy block mb-1">Foto da Doação (Max 5MB)</label>
+            <div className="flex gap-4 items-start">
+              <div className="flex-1">
+                <div className="relative border-2 border-dashed border-border rounded-xl p-8 hover:bg-slate-50 transition-colors text-center cursor-pointer">
+                  <Input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                  <UploadCloud className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
+                  <p className="text-sm font-medium text-navy">Clique para anexar ou arraste a foto</p>
+                  <p className="text-xs text-muted-foreground mt-1">PNG, JPG ou WEBP (Max. 5MB)</p>
+                </div>
+              </div>
+              {form.imagem_url && (
+                <div className="w-32 h-32 shrink-0 rounded-xl overflow-hidden border shadow-sm">
+                  <img src={form.imagem_url} alt="Preview" className="w-full h-full object-cover" />
+                </div>
+              )}
+            </div>
           </div>
           <div>
             <label className="text-sm font-semibold text-navy block mb-1">Descrição</label>
