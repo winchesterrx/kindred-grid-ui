@@ -270,3 +270,12 @@ app.delete('/api/doacoes/:id', async (req, res) => {
 
 // Exporta o aplicativo Express para ser consumido como função Serverless pela Vercel
 module.exports = app;
+
+// Se o arquivo for executado diretamente pelo Node (localmente), inicie o servidor na porta 3000
+if (require.main === module) {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`✅ Servidor da API rodando localmente na porta ${PORT}`);
+  });
+}
+
