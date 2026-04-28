@@ -1,37 +1,16 @@
 import { Heart, Landmark, Copy, Check, Share2, MessageCircle, MoreVertical, Bookmark, Info } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
-const recentDonations = [
-  {
-    id: 1,
-    title: "Entrega de Material Cirúrgico",
-    desc: "Agradecemos profundamente à comunidade pela doação de 50 kits cirúrgicos para o Pronto-Socorro. Quando nos unimos em prol do próximo, a mágica acontece. Seu amor salva vidas! 🙏💙",
-    image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=800&q=80",
-    date: "Há 2 dias",
-    likes: 342,
-  },
-  {
-    id: 2,
-    title: "Cadeiras de Rodas Novas",
-    desc: "Nossa eterna gratidão ao grupo de empresários voluntários que doaram 3 cadeiras de rodas novinhas para a ortopedia. Mais mobilidade para todos os nossos pacientes! 🦽✨",
-    image: "https://images.unsplash.com/photo-1538356111053-748a48e1acb8?w=800&q=80",
-    date: "Há 5 dias",
-    likes: 512,
-  },
-  {
-    id: 3,
-    title: "Arrecadação de Alimentos",
-    desc: "Mais de 1 tonelada de alimentos não perecíveis arrecadados graças a vocês. Tudo está sendo convertido em refeições super nutritivas para os internados do SUS. 🍲💚",
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&q=80",
-    date: "Semana passada",
-    likes: 890,
-  },
-];
+import { listarDoacoes, DoacaoTransparencia } from "@/services/mockApi";
 
 const DonationsSection = () => {
   const [copiedPix, setCopiedPix] = useState(false);
+  const [donations, setDonations] = useState<DoacaoTransparencia[]>([]);
+
+  useEffect(() => {
+    listarDoacoes().then(setDonations).catch(console.error);
+  }, []);
 
   const handleCopyPix = () => {
     navigator.clipboard.writeText("53782355000146");
@@ -59,7 +38,7 @@ const DonationsSection = () => {
 
         {/* 1. Posts Grid Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
-          {recentDonations.map((post) => (
+          {donations.length > 0 ? donations.map((post) => (
             <div key={post.id} className="bg-white border border-slate-200 shadow-sm rounded-3xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-xl hover:border-emerald/30 group">
               {/* Header do Post */}
               <div className="flex items-center justify-between p-4 bg-white">
@@ -69,7 +48,7 @@ const DonationsSection = () => {
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[13px] font-bold text-navy leading-tight hover:underline cursor-pointer">santacasapf</span>
-                    <span className="text-[11px] font-medium text-slate-500">{post.date}</span>
+                    <span className="text-[11px] font-medium text-slate-500">{post.data_publicacao}</span>
                   </div>
                 </div>
                 <button className="text-slate-400 hover:text-navy transition-colors">
@@ -80,8 +59,8 @@ const DonationsSection = () => {
               {/* Imagem do Post */}
               <div className="w-full aspect-square bg-slate-100 overflow-hidden relative">
                 <img 
-                  src={post.image} 
-                  alt={post.title} 
+                  src={post.imagem_url} 
+                  alt="Doação" 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   loading="lazy"
                 />
@@ -106,14 +85,18 @@ const DonationsSection = () => {
                   </button>
                 </div>
                 
-                <p className="text-[13px] font-bold text-navy mb-2">{post.likes.toLocaleString()} curtidas</p>
+                <p className="text-[13px] font-bold text-navy mb-2">{post.curtidas || 0} curtidas</p>
                 <p className="text-[13px] text-navy/80 leading-relaxed font-medium">
                   <span className="font-extrabold text-navy mr-2 hover:underline cursor-pointer">santacasapf</span>
-                  {post.desc}
+                  {post.descricao}
                 </p>
               </div>
             </div>
-          ))}
+          )) : (
+            <div className="col-span-full text-center text-slate-500 py-10 font-medium">
+              O feed de doações está vazio no momento. As novas doações cadastradas pelo painel administrativo aparecerão aqui.
+            </div>
+          )}
         </div>
 
         {/* 2. Donation Action Section */}
