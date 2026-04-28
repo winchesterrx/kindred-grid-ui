@@ -22,7 +22,7 @@ const AdminLogin = () => {
       sessionStorage.setItem("sc_admin_token", res.token!);
       navigate("/admin/dashboard");
     } else {
-      setError("Usuário ou senha incorretos.");
+      setError(res.message || "Usuário ou senha incorretos.");
     }
   };
 
