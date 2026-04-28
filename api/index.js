@@ -1,11 +1,9 @@
-const express = require('express');
-const cors = require('cors');
-const db = require('./db.cjs');
+import express from 'express';
+import cors from 'cors';
+import db from './db.js';
 
 const app = express();
 
-// A Vercel Serverless Function injeta os próprios parsers de body, 
-// mas é bom manter para rodar localmente.
 app.use(cors());
 app.use(express.json());
 
@@ -268,14 +266,15 @@ app.delete('/api/doacoes/:id', async (req, res) => {
   }
 });
 
-// Exporta o aplicativo Express para ser consumido como função Serverless pela Vercel
-module.exports = app;
+// Exporta o app usando ES Modules
+export default app;
 
-// Se o arquivo for executado diretamente pelo Node (localmente), inicie o servidor na porta 3000
-if (require.main === module) {
+// Execução local
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {
     console.log(`✅ Servidor da API rodando localmente na porta ${PORT}`);
   });
 }
-
