@@ -190,8 +190,8 @@ const TransparenciaPanel = () => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("O arquivo deve ter no máximo 5MB.");
+      if (file.size > 2.5 * 1024 * 1024) {
+        toast.error("O arquivo deve ter no máximo 2.5MB.");
         return;
       }
       const base64 = await fileToBase64(file);
@@ -251,7 +251,7 @@ const TransparenciaPanel = () => {
             </div>
           </div>
           <div>
-            <label className="text-sm font-semibold text-navy block mb-1">Arquivo Anexo (PDF/Imagem - Max 5MB)</label>
+            <label className="text-sm font-semibold text-navy block mb-1">Arquivo Anexo (PDF/Imagem - Max 2.5MB)</label>
             <div className="flex items-center gap-4">
               <Input type="file" accept=".pdf,image/*" onChange={handleFileUpload} className="cursor-pointer file:cursor-pointer max-w-sm" />
               {form.arquivo && <span className="text-xs font-bold text-emerald whitespace-nowrap"><CheckCircle className="w-4 h-4 inline mr-1"/> Arquivo Anexado</span>}
@@ -366,7 +366,7 @@ const NoticiasPanel = () => {
             </div>
           </div>
           <div>
-            <label className="text-sm font-semibold text-navy block mb-1">Imagem de Capa (Max 5MB)</label>
+            <label className="text-sm font-semibold text-navy block mb-1">Imagem de Capa (Max 2.5MB)</label>
             <div className="flex gap-4 items-center">
               <div className="flex-1">
                 <Input type="file" accept="image/*" onChange={handleImageUpload} className="cursor-pointer file:cursor-pointer" />
@@ -614,14 +614,14 @@ const DoacoesPanel = () => {
         <div className="bg-card rounded-2xl p-6 border border-border/60 space-y-4">
           <h3 className="font-bold text-navy">{editingItem ? "Editar Post" : "Novo Post de Doação"}</h3>
           <div>
-            <label className="text-sm font-semibold text-navy block mb-1">Foto da Doação (Max 5MB)</label>
+            <label className="text-sm font-semibold text-navy block mb-1">Foto da Doação (Max 2.5MB)</label>
             <div className="flex gap-4 items-start">
               <div className="flex-1">
                 <div className="relative border-2 border-dashed border-border rounded-xl p-8 hover:bg-slate-50 transition-colors text-center cursor-pointer">
                   <Input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
                   <UploadCloud className="w-8 h-8 text-muted-foreground mx-auto mb-2" />
                   <p className="text-sm font-medium text-navy">Clique para anexar ou arraste a foto</p>
-                  <p className="text-xs text-muted-foreground mt-1">PNG, JPG ou WEBP (Max. 5MB)</p>
+                  <p className="text-xs text-muted-foreground mt-1">PNG, JPG ou WEBP (Max. 2.5MB)</p>
                 </div>
               </div>
               {form.imagem_url && (
