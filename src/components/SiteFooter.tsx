@@ -1,13 +1,13 @@
-import { Heart, Phone, MapPin, Mail, Facebook, Instagram, Youtube, Linkedin, Lock, Clock, ExternalLink } from "lucide-react";
+import { Heart, Phone, MapPin, Mail, Facebook, Instagram, Youtube, Linkedin, Lock, Clock, ExternalLink, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const SiteFooter = () => {
   return (
     <footer className="section-white border-t border-border">
       <div className="container mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Col 1 - About */}
-          <div>
+          <div className="lg:col-span-1">
             <div className="flex items-center gap-2.5 mb-5">
               <img src="/logo.png" alt="Santa Casa Logo" className="w-10 h-10 object-contain" />
               <div>
@@ -51,6 +51,7 @@ const SiteFooter = () => {
                 { label: "Transparência", href: "#transparencia" },
                 { label: "Ouvidoria", href: "#ouvidoria" },
                 { label: "Notícias e Eventos", href: "#noticias" },
+                { label: "Horário de Visitas", href: "#horario-visitas" },
                 { label: "Política de Privacidade", href: "/politica-de-privacidade", isInternal: true },
                 { label: "Termos de Uso", href: "/termos-de-uso", isInternal: true },
               ].map((link) => (
@@ -97,7 +98,37 @@ const SiteFooter = () => {
             </div>
           </div>
 
-          {/* Col 4 - Location */}
+          {/* Col 4 - Visiting Hours Summary */}
+          <div>
+            <h4 className="text-sm font-bold text-navy uppercase tracking-wider mb-5">Horário de Visitas</h4>
+            <div className="space-y-3">
+              <div>
+                <p className="text-xs font-bold text-navy uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                  <Clock className="w-3 h-3 text-emerald" /> Visitas
+                </p>
+                <p className="text-xs text-muted-foreground">09h00 – 11h00</p>
+                <p className="text-xs text-muted-foreground">18h00 – 20h00</p>
+                <p className="text-xs text-amber-600 font-medium mt-1">Máx. 2 visitantes</p>
+              </div>
+              <div className="border-t border-border/50 pt-3">
+                <p className="text-xs font-bold text-navy uppercase tracking-wide mb-1.5 flex items-center gap-1.5">
+                  <UserCheck className="w-3 h-3 text-emerald" /> Troca de Acompanhante
+                </p>
+                <p className="text-xs text-muted-foreground">07h30 – 08h30</p>
+                <p className="text-xs text-muted-foreground">18h30 – 21h30</p>
+              </div>
+              <div className="border-t border-border/50 pt-3">
+                <p className="text-xs font-bold text-navy uppercase tracking-wide mb-1.5">Direito a acompanhante:</p>
+                <ul className="text-xs text-muted-foreground space-y-0.5">
+                  <li>· Acima de 60 anos</li>
+                  <li>· Menores de 18 anos</li>
+                  <li>· Necessidades especiais</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Col 5 - Location */}
           <div>
             <h4 className="text-sm font-bold text-navy uppercase tracking-wider mb-5">Localização</h4>
             <div className="flex items-start gap-3 mb-4">

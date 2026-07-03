@@ -1,5 +1,6 @@
 import SiteHeader from "@/components/SiteHeader";
 import HeroCarousel from "@/components/HeroCarousel";
+import VisitingHoursSection from "@/components/VisitingHoursSection";
 import ServicesSection from "@/components/ServicesSection";
 import StatsSection from "@/components/StatsSection";
 import OuvidoriaSection from "@/components/OuvidoriaSection";
@@ -17,6 +18,7 @@ const Index = () => {
       <EntryPopup />
       <SiteHeader />
       <HeroCarousel />
+      <VisitingHoursSection />
       <ServicesSection />
       <OuvidoriaSection />
       <StatsSection />
