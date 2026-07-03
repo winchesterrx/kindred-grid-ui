@@ -230,22 +230,35 @@ const TransparenciaPanel = () => {
       }
       toast.loading('Enviando arquivo para nuvem...', { id: 'file-upload' });
       try {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", "santacasa_docs");
-        
-        const response = await fetch("https://api.cloudinary.com/v1_1/dh4zb3egm/auto/upload", {
-          method: "POST",
-          body: formData
-        });
-        
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error?.message || "Erro no upload");
+        const SUPABASE_URL = 'https://haukmggfrumycbmmfilh.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_K8YK45iz14YffloBbAXS8w_Om6qLde4';
 
-        setForm({ ...form, arquivo: data.secure_url });
-        toast.success(`Arquivo pronto e salvo na nuvem!`, { id: 'file-upload' });
+        // Nome único para evitar conflitos
+        const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+        const fileName = `${Date.now()}_${safeName}`;
+
+        const response = await fetch(
+          `${SUPABASE_URL}/storage/v1/object/documentos/${fileName}`,
+          {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${SUPABASE_KEY}`,
+              'Content-Type': file.type || 'application/octet-stream',
+            },
+            body: file,
+          }
+        );
+
+        if (!response.ok) {
+          const err = await response.json();
+          throw new Error(err.message || 'Falha no upload');
+        }
+
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/documentos/${fileName}`;
+        setForm({ ...form, arquivo: publicUrl });
+        toast.success(`Arquivo enviado! (${(file.size / 1024 / 1024).toFixed(1)}MB)`, { id: 'file-upload' });
       } catch (err: any) {
-        console.error("Cloudinary error:", err);
+        console.error('Supabase Storage error:', err);
         toast.error('Falha ao enviar arquivo: ' + err.message, { id: 'file-upload' });
       }
     }
