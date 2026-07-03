@@ -231,7 +231,7 @@ const TransparenciaPanel = () => {
       toast.loading('Enviando arquivo para nuvem...', { id: 'file-upload' });
       try {
         const SUPABASE_URL = 'https://haukmggfrumycbmmfilh.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_K8YK45iz14YffloBbAXS8w_Om6qLde4';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhhdWttZ2dmcnVteWNibW1maWxoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNjg2MzUsImV4cCI6MjA5ODY0NDYzNX0.llmerZjqskNsda1MDCtgwtnFZIbEpMKZDBttitZ7Rcs';
 
         // Nome único para evitar conflitos
         const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
