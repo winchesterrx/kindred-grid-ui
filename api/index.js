@@ -5,8 +5,10 @@ import db from './db.js';
 const app = express();
 
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ limit: '10mb', extended: true }));
+// Limite aumentado para suportar arquivos de até 50MB em base64
+// (base64 gera ~33% de overhead, portanto 50MB de arquivo → ~67MB de body)
+app.use(express.json({ limit: '80mb' }));
+app.use(express.urlencoded({ limit: '80mb', extended: true }));
 
 // Rota de teste para verificar se o servidor está online (sem DB)
 app.get('/api/health', (req, res) => {
@@ -110,6 +112,23 @@ app.get('/api/documentos', async (req, res) => {
   }
 });
 
+// Helper para detectar erros de capacidade do banco de dados
+const isStorageError = (error) => {
+  const storageErrorCodes = [
+    'ER_NET_PACKET_TOO_LARGE', // Pacote maior que max_allowed_packet do MySQL
+    'ER_DISK_FULL',            // Disco do servidor cheio
+    'ER_RECORD_FILE_FULL',     // Tabela MyISAM cheia
+    'ER_TEMP_FILE_WRITE_FAILURE',
+  ];
+  if (storageErrorCodes.includes(error.code)) return true;
+  // Detecção por mensagem para casos não cobertos pelos codes acima
+  const msg = (error.message || '').toLowerCase();
+  if (msg.includes('got a packet bigger than') ||
+      msg.includes('disk full') ||
+      msg.includes('no space left')) return true;
+  return false;
+};
+
 app.post('/api/documentos', async (req, res) => {
   try {
     const { nome, categoria, subcategoria, descricao, data_publicacao, arquivo_url, is_favorite } = req.body;
@@ -119,6 +138,13 @@ app.post('/api/documentos', async (req, res) => {
     );
     res.json({ id: result.insertId });
   } catch (error) {
+    console.error('Erro ao salvar documento:', error.code, error.message);
+    if (isStorageError(error)) {
+      return res.status(507).json({
+        error: 'STORAGE_FULL',
+        message: 'O banco de dados não comporta mais arquivos. Entre em contato com o desenvolvedor.'
+      });
+    }
     res.status(500).json({ error: error.message });
   }
 });
@@ -133,6 +159,13 @@ app.put('/api/documentos/:id', async (req, res) => {
     );
     res.json({ success: true });
   } catch (error) {
+    console.error('Erro ao editar documento:', error.code, error.message);
+    if (isStorageError(error)) {
+      return res.status(507).json({
+        error: 'STORAGE_FULL',
+        message: 'O banco de dados não comporta mais arquivos. Entre em contato com o desenvolvedor.'
+      });
+    }
     res.status(500).json({ error: error.message });
   }
 });

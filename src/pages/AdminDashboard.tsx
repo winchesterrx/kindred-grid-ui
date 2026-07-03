@@ -222,26 +222,48 @@ const TransparenciaPanel = () => {
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2.5 * 1024 * 1024) {
-        toast.error("O arquivo deve ter no máximo 2.5MB.");
+      const MAX_SIZE_MB = 50;
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        toast.error(`O arquivo deve ter no máximo ${MAX_SIZE_MB}MB.`);
+        e.target.value = '';
         return;
       }
-      const base64 = await fileToBase64(file);
-      setForm({ ...form, arquivo: base64 });
+      toast.loading('Processando arquivo...', { id: 'file-upload' });
+      try {
+        const base64 = await fileToBase64(file);
+        setForm({ ...form, arquivo: base64 });
+        toast.success(`Arquivo pronto (${(file.size / 1024 / 1024).toFixed(1)}MB)`, { id: 'file-upload' });
+      } catch {
+        toast.error('Falha ao processar o arquivo.', { id: 'file-upload' });
+      }
     }
   };
 
   const handleSave = async () => {
     if (!form.nome || !form.categoria || !form.dataPublicacao) return;
-    if (editingDoc) {
-      await editarDocumento(editingDoc.id, form);
-    } else {
-      await criarDocumento(form);
+    try {
+      if (editingDoc) {
+        await editarDocumento(editingDoc.id, form);
+      } else {
+        await criarDocumento(form);
+      }
+      toast.success(editingDoc ? 'Documento atualizado com sucesso!' : 'Documento publicado com sucesso!');
+      setShowForm(false);
+      setEditingDoc(null);
+      setForm({ nome: '', descricao: '', categoria: '', subcategoria: '', dataPublicacao: '', arquivo: '', is_favorite: false });
+      load();
+    } catch (err: any) {
+      const msg: string = err?.message || '';
+      // Detecta erro de banco lotado (HTTP 507 ou mensagem específica)
+      if (msg.includes('507') || msg.toLowerCase().includes('storage') || msg.toLowerCase().includes('não comporta') || msg.toLowerCase().includes('packet bigger')) {
+        toast.error(
+          '⚠️ Espaço insuficiente no banco de dados. O arquivo não pôde ser salvo. Entre em contato com o desenvolvedor do sistema.',
+          { duration: 10000 }
+        );
+      } else {
+        toast.error('Erro ao salvar o documento. Tente novamente.');
+      }
     }
-    setShowForm(false);
-    setEditingDoc(null);
-    setForm({ nome: "", descricao: "", categoria: "", subcategoria: "", dataPublicacao: "", arquivo: "", is_favorite: false });
-    load();
   };
 
   const handleEdit = (doc: DocumentoTransparencia) => {
@@ -464,7 +486,7 @@ const TransparenciaPanel = () => {
             </label>
           </div>
           <div>
-            <label className="text-sm font-semibold text-navy block mb-1">Arquivo Anexo (PDF/Imagem - Max 2.5MB)</label>
+            <label className="text-sm font-semibold text-navy block mb-1">Arquivo Anexo (PDF/Imagem - Max 50MB)</label>
             <div className="flex items-center gap-4">
               <Input type="file" accept=".pdf,image/*" onChange={handleFileUpload} className="cursor-pointer file:cursor-pointer max-w-sm" />
               {form.arquivo && <span className="text-xs font-bold text-emerald whitespace-nowrap"><CheckCircle className="w-4 h-4 inline mr-1"/> Arquivo Anexado</span>}

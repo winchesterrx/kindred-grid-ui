@@ -103,8 +103,11 @@ const fetchApi = async (url: string, options: RequestInit = {}) => {
   
   const response = await fetch(url, { ...options, headers: { ...headers, ...options.headers } });
   if (!response.ok) {
-    const err = await response.text();
-    throw new Error(`Erro na requisição: ${response.status} - ${err}`);
+    let errBody: any = {};
+    try { errBody = await response.json(); } catch { errBody = { message: await response.text() }; }
+    // Inclui o status HTTP na mensagem para que o chamador possa diferenciar erros específicos
+    const errMsg = errBody?.message || errBody?.error || JSON.stringify(errBody);
+    throw new Error(`${response.status} - ${errMsg}`);
   }
   return response.json();
 };
