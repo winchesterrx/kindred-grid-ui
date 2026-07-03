@@ -9,6 +9,7 @@ const navItems = [
   { label: "Nota Fiscal Paulista", href: "/nota-fiscal-paulista" },
   { label: "Ouvidoria e Contato", href: "/#ouvidoria" },
   { label: "Notícias", href: "/#noticias" },
+  { label: "Horário de Visitas", href: "/#horario-visitas", highlight: true },
 ];
 
 const SiteHeader = () => {
@@ -44,15 +45,26 @@ const SiteHeader = () => {
 
           {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-7">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="text-sm font-medium text-foreground/80 hover:text-navy transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full"
-              >
-                {item.label}
-              </a>
-            ))}
+            {navItems.map((item) =>
+              item.highlight ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald border border-emerald/30 bg-emerald/8 hover:bg-emerald/15 px-3 py-1.5 rounded-full transition-colors"
+                >
+                  <Clock className="w-3.5 h-3.5" />
+                  {item.label}
+                </a>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="text-sm font-medium text-foreground/80 hover:text-navy transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-secondary after:transition-all hover:after:w-full"
+                >
+                  {item.label}
+                </a>
+              )
+            )}
           </nav>
 
           {/* CTA */}
@@ -77,16 +89,28 @@ const SiteHeader = () => {
               <span className="mx-1">·</span>
               <Clock className="w-3 h-3" /> 24h
             </div>
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                className="block text-sm font-medium text-foreground/80 hover:text-navy py-1"
-                onClick={() => setMobileOpen(false)}
-              >
-                {item.label}
-              </a>
-            ))}
+            {navItems.map((item) =>
+              item.highlight ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="flex items-center gap-2 text-sm font-bold text-emerald py-1"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <Clock className="w-4 h-4" />
+                  {item.label}
+                </a>
+              ) : (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  className="block text-sm font-medium text-foreground/80 hover:text-navy py-1"
+                  onClick={() => setMobileOpen(false)}
+                >
+                  {item.label}
+                </a>
+              )
+            )}
             <Button variant="cta" className="w-full rounded-full" onClick={() => { setMobileOpen(false); window.location.href = '/#doacoes'; }}>
               <Heart className="w-4 h-4 mr-1" />
               Doe Agora
