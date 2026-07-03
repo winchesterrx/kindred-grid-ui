@@ -228,13 +228,25 @@ const TransparenciaPanel = () => {
         e.target.value = '';
         return;
       }
-      toast.loading('Processando arquivo...', { id: 'file-upload' });
+      toast.loading('Enviando arquivo para nuvem...', { id: 'file-upload' });
       try {
-        const base64 = await fileToBase64(file);
-        setForm({ ...form, arquivo: base64 });
-        toast.success(`Arquivo pronto (${(file.size / 1024 / 1024).toFixed(1)}MB)`, { id: 'file-upload' });
-      } catch {
-        toast.error('Falha ao processar o arquivo.', { id: 'file-upload' });
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", "santacasa_docs");
+        
+        const response = await fetch("https://api.cloudinary.com/v1_1/dh4zb3egm/auto/upload", {
+          method: "POST",
+          body: formData
+        });
+        
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error?.message || "Erro no upload");
+
+        setForm({ ...form, arquivo: data.secure_url });
+        toast.success(`Arquivo pronto e salvo na nuvem!`, { id: 'file-upload' });
+      } catch (err: any) {
+        console.error("Cloudinary error:", err);
+        toast.error('Falha ao enviar arquivo: ' + err.message, { id: 'file-upload' });
       }
     }
   };

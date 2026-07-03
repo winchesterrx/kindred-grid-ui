@@ -23,11 +23,12 @@ import {
   X,
 } from "lucide-react";
 
-// ─── Type detection ───────────────────────────────────────────────────────────
 const detectFileType = (url: string): "pdf" | "image" | "external" | "unknown" => {
   if (!url) return "unknown";
-  if (url.startsWith("data:application/pdf") || url.toLowerCase().endsWith(".pdf")) return "pdf";
-  if (url.startsWith("data:image") || /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i.test(url)) return "image";
+  
+  const urlWithoutQuery = url.toLowerCase().split('?')[0];
+  if (url.startsWith("data:application/pdf") || urlWithoutQuery.endsWith(".pdf")) return "pdf";
+  if (url.startsWith("data:image") || /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(urlWithoutQuery)) return "image";
   if (url.startsWith("http://") || url.startsWith("https://")) return "external";
   return "unknown";
 };
