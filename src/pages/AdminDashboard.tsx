@@ -182,6 +182,7 @@ const TransparenciaPanel = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingDoc, setEditingDoc] = useState<DocumentoTransparencia | null>(null);
   const [form, setForm] = useState({ nome: "", descricao: "", categoria: "", subcategoria: "", dataPublicacao: "", arquivo: "", is_favorite: false });
+  const [isUploading, setIsUploading] = useState(false);
   
   const [categoriasLista, setCategoriasLista] = useState<string[]>(() => {
     const saved = localStorage.getItem("sc_transparencia_categorias");
@@ -228,6 +229,7 @@ const TransparenciaPanel = () => {
         e.target.value = '';
         return;
       }
+      setIsUploading(true);
       toast.loading('Enviando arquivo para nuvem...', { id: 'file-upload' });
       try {
         const SUPABASE_URL = 'https://haukmggfrumycbmmfilh.supabase.co';
@@ -260,6 +262,8 @@ const TransparenciaPanel = () => {
       } catch (err: any) {
         console.error('Supabase Storage error:', err);
         toast.error('Falha ao enviar arquivo: ' + err.message, { id: 'file-upload' });
+      } finally {
+        setIsUploading(false);
       }
     }
   };
@@ -517,8 +521,20 @@ const TransparenciaPanel = () => {
               {form.arquivo && <span className="text-xs font-bold text-emerald whitespace-nowrap"><CheckCircle className="w-4 h-4 inline mr-1"/> Arquivo Anexado</span>}
             </div>
           </div>
-          <Button variant="navy-solid" onClick={handleSave}>
-            {editingDoc ? "Salvar Alterações" : "Publicar Documento"}
+          <Button
+            variant="navy-solid"
+            onClick={handleSave}
+            disabled={isUploading}
+            className="relative"
+          >
+            {isUploading ? (
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                Enviando arquivo...
+              </span>
+            ) : (
+              editingDoc ? "Salvar Alterações" : "Publicar Documento"
+            )}
           </Button>
         </div>
       ) : null}
